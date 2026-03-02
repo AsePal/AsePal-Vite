@@ -1,5 +1,7 @@
 // demo-only Playwright test for competition presentation (precise mini user flow)
 import { test, expect } from '@playwright/test';
+import * as fs from 'fs';
+import { exec } from 'child_process';
 
 test('mini user flow: first-visit -> login -> one chat -> logout (presentation)', async ({
   page,
@@ -152,8 +154,8 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
   let lastContent = '';
   let stableCount = 0;
   const maxWaitTime = 120000; // 最长等待120秒
-  const checkInterval = 3000; // 每3秒检查一次
-  const stableThreshold = 4; // 连续4次内容相同则认为稳定（共12秒）
+  const checkInterval = 1000; // 每1秒检查一次
+  const stableThreshold = 4; // 连续4次内容相同则认为稳定（共4秒）
   const startTime = Date.now();
 
   while (stableCount < stableThreshold && Date.now() - startTime < maxWaitTime) {
@@ -245,9 +247,36 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
       const confirm = page
         .locator('button:has-text("确认退出"), button:has-text("Sign out")')
         .first();
-      console.log(`   确认按钮数量: ${await confirm.count()}`);
+      const confirmCount = await confirm.count();
+      console.log(`   确认按钮数量: ${confirmCount}`);
 
-      if ((await confirm.count()) > 0) {
+      // 如果点击后确认按钮没有出现，说明退出按钮失效
+      if (confirmCount === 0) {
+        console.error('❌ 退出按钮点击后未响应。停止测试并尝试打开测试报告...');
+
+        // 尝试打开常见的本地报告路径（Windows start 命令）
+        const candidates = [
+          'playwright-report/index.html',
+          'docs/playwright-report/index.html',
+          'tests/playwright-report/index.html',
+        ];
+        for (const p of candidates) {
+          try {
+            if (fs.existsSync(p)) {
+              // 使用 cmd start 在默认浏览器中打开
+              exec(`start "" "${p}"`, (err) => {});
+              console.log(`已打开报告: ${p}`);
+              break;
+            }
+          } catch (e) {
+            // 忽略打开错误
+          }
+        }
+
+        throw new Error('Logout button appears to be disabled - aborting test');
+      }
+
+      if (confirmCount > 0) {
         await confirm.click();
         await page.waitForLoadState('networkidle').catch(() => {});
         await slow(1000);
@@ -271,7 +300,30 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
         const confirm = page
           .locator('button:has-text("确认退出"), button:has-text("Sign out")')
           .first();
-        if ((await confirm.count()) > 0) {
+        const confirmCount = await confirm.count();
+
+        if (confirmCount === 0) {
+          console.error(
+            '❌ 退出按钮点击后未响应（可能已被测试注入禁用）。停止测试并尝试打开测试报告...',
+          );
+          const candidates = [
+            'playwright-report/index.html',
+            'docs/playwright-report/index.html',
+            'tests/playwright-report/index.html',
+          ];
+          for (const p of candidates) {
+            try {
+              if (fs.existsSync(p)) {
+                exec(`start "" "${p}"`, (err) => {});
+                console.log(`已打开报告: ${p}`);
+                break;
+              }
+            } catch (e) {}
+          }
+          throw new Error('Logout button appears to be disabled - aborting test');
+        }
+
+        if (confirmCount > 0) {
           await confirm.click();
           await page.waitForLoadState('networkidle').catch(() => {});
         }
@@ -285,7 +337,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
   );
 
   // 采用轮询方式检查登录入口或用户名不可见，避免 Playwright 的 waitFor/expect 在超时抛出直接导致测试失败
-  const pollTimeout = 8000;
+  const pollTimeout = 5000; // 缩短为 5 秒，比赛期间需要更短的等待
   const pollInterval = 500;
   const start = Date.now();
   let passed = false;
