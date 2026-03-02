@@ -10,7 +10,9 @@
     "format": "prettier --write .",
     "preview": "vite preview",
     "open:build": "node ./scripts/open-build.cjs",
-    "demo:playwright": "playwright test tests/demo-chat.spec.ts --headed --project=chromium --timeout=300000"
+    "demo:playwright": "playwright test tests/demo-chat.spec.ts --headed --project=chromium --timeout=300000",
+    "demo:playwright:broken": "playwright test tests/demo-chat-broken.spec.ts --headed --project=chromium --timeout=300000",
+    "demo:playwright:normal": "playwright test tests/demo-chat-normal.spec.ts --headed --project=chromium --timeout=300000"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
