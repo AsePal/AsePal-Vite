@@ -2,6 +2,83 @@
 // 用于演示测试成功场景
 import { test, expect } from '@playwright/test';
 
+// ---- 多语言选择器工具与词典（覆盖 中 / English / Tiếng Việt / ไทย） ----
+const multi = (page: any, selectors: string[]) => page.locator(selectors.join(', '));
+const clickIfExists = async (page: any, selectors: string[], options = {}) => {
+  const loc = multi(page, selectors).first();
+  if ((await loc.count()) > 0) {
+    await loc.click(options).catch(() => {});
+    return true;
+  }
+  return false;
+};
+
+const I18N = {
+  goToSignIn: [
+    'button:has-text("前往登录")',
+    'button:has-text("Go to sign in")',
+    'button:has-text("Đăng nhập")',
+    'button:has-text("Đi đến đăng nhập")',
+    'button:has-text("เข้าสู่ระบบ")',
+    'button:has-text("ไปที่เข้าสู่ระบบ")',
+  ],
+  signIn: [
+    'button:has-text("登录")',
+    'button:has-text("Sign in")',
+    'button:has-text("Đăng nhập")',
+    'button:has-text("เข้าสู่ระบบ")',
+  ],
+  newConversation: [
+    'button[aria-label="New conversation"]',
+    'button[aria-label="新建对话"]',
+    'button:has-text("新建对话")',
+    'button:has-text("New conversation")',
+    'button:has-text("Cuộc trò chuyện mới")',
+    'button:has-text("การสนทนาใหม่")',
+  ],
+  sendMessage: [
+    'button[aria-label="Send message"]',
+    'button:has-text("发送")',
+    'button:has-text("Send")',
+    'button:has-text("Gửi")',
+    'button:has-text("ส่ง")',
+  ],
+  openProfile: [
+    'button[aria-label="Open profile"]',
+    'button[aria-label="打开用户信息"]',
+    'button[aria-label="User profile"]',
+    'button[aria-label="个人信息"]',
+    'button[aria-label="Profile"]',
+    'button:has-text("Hồ sơ")',
+    'button:has-text("Thông tin tài khoản")',
+    'button:has-text("โปรไฟล์")',
+  ],
+  logout: [
+    'button:has-text("退出登录")',
+    'button:has-text("登出")',
+    'button:has-text("Sign out")',
+    'button:has-text("Logout")',
+    'button:has-text("Đăng xuất")',
+    'button:has-text("ออกจากระบบ")',
+  ],
+  confirmLogout: [
+    'button:has-text("确认退出")',
+    'button:has-text("Confirm sign out")',
+    'button:has-text("Confirm")',
+    'button:has-text("Xác nhận")',
+    'button:has-text("Đồng ý")',
+    'button:has-text("ยืนยัน")',
+  ],
+  signInEntry: [
+    'button:has-text("Go to sign in")',
+    'button:has-text("登录")',
+    'a:has-text("Sign in")',
+    'button:has-text("Sign in")',
+    'button:has-text("Đăng nhập")',
+    'button:has-text("เข้าสู่ระบบ")',
+  ],
+};
+
 test('Asepal AI前端自动化测试报告', async ({ page }) => {
   const log = (step: string) => console.log(`\n✅ [STEP] ${step}`);
   const slow = async (ms = 800) => await page.waitForTimeout(ms);
@@ -24,7 +101,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   }
 
   log('2. 点击"Go to sign in"按钮');
-  const goLoginBtn = page.locator('button:has-text("前往登录"), button:has-text("Go to sign in")');
+  const goLoginBtn = multi(page, I18N.goToSignIn);
   if ((await goLoginBtn.count()) > 0) {
     await expect(goLoginBtn.first()).toBeVisible();
     await goLoginBtn
@@ -61,7 +138,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     }
 
     log('3.2 点击登录按钮');
-    const submit = page.locator('button:has-text("登录"), button:has-text("Sign in")').first();
+    const submit = multi(page, I18N.signIn).first();
     if ((await submit.count()) > 0) {
       await Promise.all([
         page.waitForURL(/chat/, { timeout: 15000 }).catch(() => {}),
@@ -93,9 +170,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   await slow(1500);
 
   log('5. 新建会话');
-  const newConv = page.locator(
-    'button[aria-label="New conversation"], button[aria-label="新建对话"]',
-  );
+  const newConv = multi(page, I18N.newConversation);
   if ((await newConv.count()) > 0) {
     await newConv
       .first()
@@ -111,9 +186,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   await slow(600);
 
   // 发送消息
-  const send = page
-    .locator('button[aria-label="Send message"], button:has-text("发送"), button:has-text("Send")')
-    .first();
+  const send = multi(page, I18N.sendMessage).first();
   if ((await send.count()) > 0) {
     await send.click().catch(() => {});
   } else {
@@ -210,9 +283,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   await slow(800);
 
   // ✅ 正常的退出登录流程
-  const userProfileBtn = page
-    .locator('button[aria-label="Open profile"], button[aria-label="打开用户信息"]')
-    .first();
+  const userProfileBtn = multi(page, I18N.openProfile).first();
   console.log(`   用户信息按钮数量: ${await userProfileBtn.count()}`);
 
   if ((await userProfileBtn.count()) > 0) {
@@ -221,9 +292,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     await slow(1000);
 
     log('7.2 点击退出登录');
-    const logoutBtn = page
-      .locator('button:has-text("退出登录"), button:has-text("Sign out")')
-      .first();
+    const logoutBtn = multi(page, I18N.logout).first();
     console.log(`   退出按钮数量: ${await logoutBtn.count()}`);
 
     if ((await logoutBtn.count()) > 0) {
@@ -231,9 +300,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
       await slow(800);
 
       log('7.3 确认退出');
-      const confirm = page
-        .locator('button:has-text("确认退出"), button:has-text("Sign out")')
-        .first();
+      const confirm = multi(page, I18N.confirmLogout).first();
       const confirmCount = await confirm.count();
       console.log(`   确认按钮数量: ${confirmCount}`);
 
@@ -251,16 +318,12 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
       await userItem.click();
       await slow(800);
 
-      const logoutBtn = page
-        .locator('button:has-text("退出登录"), button:has-text("Sign out")')
-        .first();
+      const logoutBtn = multi(page, I18N.logout).first();
       if ((await logoutBtn.count()) > 0) {
         await logoutBtn.click();
         await slow(600);
 
-        const confirm = page
-          .locator('button:has-text("确认退出"), button:has-text("Sign out")')
-          .first();
+        const confirm = multi(page, I18N.confirmLogout).first();
         const confirmCount = await confirm.count();
 
         if (confirmCount > 0) {
@@ -272,9 +335,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   }
 
   log('8. 验证已退出登录');
-  const signIn = page.locator(
-    'button:has-text("Go to sign in"), button:has-text("登录"), a:has-text("Sign in")',
-  );
+  const signIn = multi(page, I18N.signInEntry);
 
   const pollTimeout = 5000;
   const pollInterval = 500;

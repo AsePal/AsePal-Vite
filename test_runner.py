@@ -432,6 +432,7 @@ def main():
         clear_console()
         print_banner()
         print("📡 开发服务器运行中 (http://localhost:5173)")
+        print()
         print("🧭 已进入操作菜单")
         sys.stdout.flush()
         
@@ -455,7 +456,8 @@ def main():
                     clear_console()
                     print_banner()
                     print("📡 开发服务器运行中 (http://localhost:5173)")
-                    print("🧭 已返回操作菜单")
+                    print()
+                    print("🧭 测试已完成或异常退出！已返回操作菜单")
                     sys.stdout.flush()
                     continue
                 time.sleep(1)
@@ -471,7 +473,8 @@ def main():
                     clear_console()
                     print_banner()
                     print("📡 开发服务器运行中 (http://localhost:5173)")
-                    print("🧭 已返回操作菜单")
+                    print()
+                    print("🧭 测试已完成或异常退出！已返回操作菜单")
                     sys.stdout.flush()
                     continue
                 time.sleep(1)
