@@ -5,8 +5,9 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const dist = path.join(root, 'dist');
 // Time scale: multiply all sleep durations by this factor to control total runtime
-// Set to ~0.7 to reduce the demo to ~42s (original ~60s)
-const TIME_SCALE = 0.7;
+// Set to ~0.65 to reduce the demo by a few seconds (small speedup)
+// This shortens total demo time by ~3s compared to 0.7 while keeping pace natural.
+const TIME_SCALE = 0.65;
 
 function sleep(ms) {
   // scale sleep durations so the whole demo runs faster or slower
@@ -24,22 +25,7 @@ async function run() {
   const MAGENTA = '\x1b[35m';
   const DIM = '\x1b[2m';
 
-  // print a small ASCII box at start with English content similar to screenshot
-  function printBox(text) {
-    const pad = 2;
-    const content = ` ${text} `;
-    const width = content.length + pad * 2;
-    const top = '┌' + '─'.repeat(width) + '┐';
-    const middle = '│' + ' '.repeat(pad) + content + ' '.repeat(pad) + '│';
-    const bottom = '└' + '─'.repeat(width) + '┘';
-    console.log('\n' + CYAN + top + RESET);
-    console.log(CYAN + middle + RESET);
-    console.log(CYAN + bottom + RESET + '\n');
-  }
-
-  // show the box at the very start of the run
-  printBox('Welcome to the automated build script');
-  await sleep(300);
+  // 不再展示额外的开场框
 
   // collect some sample files from the project's src tree to list in output
   function collectSampleFiles(srcDir, maxFiles = 8) {
@@ -145,7 +131,7 @@ async function run() {
   })();
 
   // helper: type characters with small delay to simulate typing (faster)
-  async function typeWrite(s, min = 2, max = 8) {
+  async function typeWrite(s, min = 1, max = 6) {
     for (const ch of s) {
       process.stdout.write(ch);
       await sleep(min + Math.floor(Math.random() * (max - min + 1)));
@@ -157,7 +143,7 @@ async function run() {
     process.stdout.write(prefix);
     const totalDots = 3 + Math.floor(Math.random() * 4);
     for (let d = 0; d < totalDots; d++) {
-      await sleep(40 + Math.floor(Math.random() * 80));
+      await sleep(30 + Math.floor(Math.random() * 60));
       process.stdout.write('.');
     }
     process.stdout.write('\n');
@@ -183,8 +169,8 @@ async function run() {
     while (downloaded < totalKB) {
       // speed varies between 400 KB/s and 3000 KB/s
       const speedKBs = 400 + Math.floor(Math.random() * 2600);
-      // tick duration between 30ms and 120ms
-      const tick = 30 + Math.floor(Math.random() * 90);
+      // tick duration shortened slightly for a snappier demo
+      const tick = 20 + Math.floor(Math.random() * 70);
       const chunk = Math.min(
         totalKB - downloaded,
         Math.max(1, Math.round((speedKBs * tick) / 1000)),
@@ -199,7 +185,7 @@ async function run() {
     process.stdout.write(
       `\r${CYAN}${label}${RESET} ${progressBar(totalKB, totalKB, 28)} ${Math.round(totalKB / Math.max(0.1, (Date.now() - startTime) / 1000))} KB/s\n`,
     );
-    await sleep(100 + Math.floor(Math.random() * 120));
+    await sleep(60 + Math.floor(Math.random() * 80));
   }
 
   // simulate a progress bar for build steps
@@ -212,7 +198,8 @@ async function run() {
       const bar = progressBar(curr, total, 30);
       const pct = Math.round((curr / total) * 100);
       process.stdout.write(`\r${CYAN}${label}${RESET} ${bar} (${pct}%)`);
-      await sleep(60 + Math.floor(Math.random() * 80));
+      // slightly faster progress updates for snappier feel
+      await sleep(40 + Math.floor(Math.random() * 60));
     }
     process.stdout.write('\n');
     await sleep(80 + Math.floor(Math.random() * 120));
@@ -316,28 +303,7 @@ async function run() {
 
   console.log('\nBuild finished successfully.');
 
-  // wait for any key press before exiting so user can see output
-  async function waitForAnyKey(message = 'Press any key to exit...') {
-    return new Promise((resolve) => {
-      try {
-        if (!process.stdin || !process.stdin.setRawMode) return resolve();
-        console.log('\n' + message);
-        process.stdin.setRawMode(true);
-        process.stdin.resume();
-        process.stdin.once('data', () => {
-          try {
-            process.stdin.setRawMode(false);
-            process.stdin.pause();
-          } catch (e) {}
-          resolve();
-        });
-      } catch (e) {
-        resolve();
-      }
-    });
-  }
-
-  await waitForAnyKey();
+  // 直接结束，无需等待按键
 }
 
 run().catch((err) => {
