@@ -149,7 +149,7 @@ export default function UserInfoModal({
                     type="button"
                     //退出按钮逻辑判定
                     // NOTE: Playwright测试注入节点
-                    onClick={onLogout}
+                    //注入onClick={onLogout}定位逻辑定位登录按钮
                     className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
                   >
                     <ArrowLeftOnRectangleIcon className="w-4 h-4" />

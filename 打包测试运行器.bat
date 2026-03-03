@@ -16,26 +16,47 @@ if errorlevel 1 (
 echo ✓ 检测到 Python
 echo.
 
-REM 检查并安装 pyinstaller
-echo 正在检查 pyinstaller...
-pip show pyinstaller >nul 2>&1
+REM 使用 Nuitka 打包（若不可用则回退到 PyInstaller）
+echo 正在检查 pip 可用性...
+python -m pip --version >nul 2>&1
 if errorlevel 1 (
-    echo 正在安装 pyinstaller...
-    pip install pyinstaller
+    echo ❌ 错误: 未找到可用的 pip（请确保 python 已加入 PATH 或使用完整路径）
+    pause
+    exit /b 1
+)
+
+echo 正在检查 Nuitka...
+python -m pip show nuitka >nul 2>&1
+if errorlevel 1 (
+    echo Nuitka 未安装，正在安装 Nuitka...
+    python -m pip install --upgrade pip
+    python -m pip install nuitka
 )
 
 echo.
-echo 开始打包 test_runner.py 为 EXE...
+echo 开始使用 Nuitka 打包 test_runner.py 为 EXE...
 echo.
 
-REM 使用 pyinstaller 打包
-pyinstaller --onefile --console --name "测试运行器" --distpath "." test_runner.py
+REM 使用 Nuitka 打包为单文件（注意：Nuitka 在 Windows 上可能需要 MSVC 编译工具）
+python -m nuitka --onefile --remove-output --output-dir "." test_runner.py
 
 if errorlevel 1 (
     echo.
-    echo ❌ 打包失败，请检查错误信息
-    pause
-    exit /b 1
+    echo ⚠️ Nuitka 打包失败，尝试回退到 PyInstaller...
+    echo 正在检查并安装 PyInstaller...
+    python -m pip show pyinstaller >nul 2>&1
+    if errorlevel 1 (
+        python -m pip install pyinstaller
+    )
+    echo.
+    echo 使用 PyInstaller 打包 test_runner.py 为 EXE...
+    python -m PyInstaller --onefile --console --name "测试运行器" --distpath "." test_runner.py
+    if errorlevel 1 (
+        echo.
+        echo ❌ 打包失败（PyInstaller 回退也失败），请检查错误信息
+        pause
+        exit /b 1
+    )
 )
 
 echo.
