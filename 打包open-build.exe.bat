@@ -36,6 +36,33 @@ if errorlevel 1 (
 
 echo.
 echo 打包完成：dist\%EXE_NAME%
-echo 如需重新打包，可刪除 build/ 和 dist/ 再运行本脚本。
+echo 开始清理打包残留文件...
+
+rem 计算脚本基名以定位 .spec 文件
+for %%I in ("%SCRIPT%") do set "BASENAME=%%~nI"
+set "SPEC=%BASENAME%.spec"
+
+rem 删除 build 目录（PyInstaller 生成的临时文件）
+if exist "build" (
+  echo 正在删除 build/ ...
+  rmdir /s /q "build"
+  if not exist "build" (echo 已删除 build/) else (echo 无法删除 build/)
+)
+
+rem 删除 __pycache__（若存在）
+if exist "__pycache__" (
+  echo 正在删除 __pycache__ ...
+  rmdir /s /q "__pycache__"
+  if not exist "__pycache__" (echo 已删除 __pycache__) else (echo 无法删除 __pycache__)
+)
+
+rem 删除 .spec 文件
+if exist "%SPEC%" (
+  echo 正在删除 %SPEC% ...
+  del /f /q "%SPEC%"
+  if not exist "%SPEC%" (echo 已删除 %SPEC%) else (echo 无法删除 %SPEC%)
+)
+
+echo 清理完成。如需保留构建产物，请手动恢复对应文件。
 pause
 endlocal
