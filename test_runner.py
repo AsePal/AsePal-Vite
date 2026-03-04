@@ -457,7 +457,7 @@ def main():
                     print_banner()
                     print("📡 开发服务器运行中 (http://localhost:5173)")
                     print()
-                    print("🧭 测试已完成或异常退出！已返回操作菜单")
+                    print("🧭 测试异常退出！已返回操作菜单")
                     sys.stdout.flush()
                     continue
                 time.sleep(1)
@@ -474,7 +474,7 @@ def main():
                     print_banner()
                     print("📡 开发服务器运行中 (http://localhost:5173)")
                     print()
-                    print("🧭 测试已完成或异常退出！已返回操作菜单")
+                    print("🧭 测试异常退出！已返回操作菜单")
                     sys.stdout.flush()
                     continue
                 time.sleep(1)

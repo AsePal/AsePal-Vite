@@ -26,7 +26,7 @@ if errorlevel 1 (
   )
 )
 
-echo 正在打包為單文件 EXE...
+echo 正在打包为 EXE...
 pyinstaller --noconfirm --onefile --console "%SCRIPT%"
 if errorlevel 1 (
   echo 打包失败。
