@@ -794,13 +794,13 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
       await logoutLoc.click().catch(() => {});
       await slow(800);
     } else {
-      // 找不到退出按钮，记录失败并终止测试
+      
       console.error('\n❌ [ERROR] 退出登录按钮异常：未找到退出登录按钮，测试终止');
       // 更新检查点状态为失败
       const idx = checkpoints.findIndex(c => c.name.includes('7.2 点击退出登录'));
       if (idx >= 0) checkpoints[idx].status = '❌ 失败';
       
-      // 输出测试报告后抛出错误终止测试
+      // 抛出错误终止测试并输出测试报告
       printTestReport();
       throw new Error('❌ 退出登录按钮异常：未找到退出登录按钮，测试终止');
     }
