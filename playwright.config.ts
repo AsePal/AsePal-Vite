@@ -1,4 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
+// Explicitly import `process` to satisfy TypeScript in environments
+// where `@types/node` is not installed.
+// If the environment doesn't provide Node types, declare a minimal `process`
+// symbol so TypeScript won't error. Prefer installing `@types/node` in the
+// project for a full typing experience.
+declare const process: any;
 
 /**
  * Read environment variables from file.
@@ -34,6 +40,11 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    /* 启动时窗口最小化（任务栏可见，点击后可查看） */
+    launchOptions: {
+      args: ['--start-minimized'],
+    },
   },
 
   /* Configure projects for major browsers */

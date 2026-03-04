@@ -461,7 +461,7 @@ def main():
                     sys.stdout.flush()
                     continue
                 time.sleep(1)
-                open_report(project_root)
+                # 不自动打开测试报告（按要求移除自动打开行为）
                 
             elif choice == '2':
                 clear_console()
@@ -478,7 +478,7 @@ def main():
                     sys.stdout.flush()
                     continue
                 time.sleep(1)
-                open_report(project_root)
+                # 不自动打开测试报告（按要求移除自动打开行为）
                 
             elif choice == '3':
                 clear_console()
