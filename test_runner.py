@@ -29,6 +29,7 @@ CYAN = "\x1b[36m"
 GREEN = "\x1b[32m"
 YELLOW = "\x1b[33m"
 RED = "\x1b[31m"
+PURPLE = "\x1b[35m"
 RESET = "\x1b[0m"
 
 
@@ -63,8 +64,9 @@ def print_menu():
     # 带颜色的选项
     print(f"  {CYAN}[1]{RESET} {GREEN}运行自动化测试{RESET}")
     print(f"  {CYAN}[2]{RESET} {YELLOW}重启playwright服务后重试测试{RESET}")
-    print(f"  {CYAN}[3]{RESET} {CYAN}重启开发服务{RESET}")
-    print(f"  {CYAN}[4]{RESET} {RED}退出程序{RESET}")
+    print(f"  {CYAN}[3]{RESET} {CYAN}运行自动化测试（无Browser界面）{RESET}")
+    print(f"  {CYAN}[4]{RESET} {PURPLE}重启开发服务{RESET}")
+    print(f"  {CYAN}[5]{RESET} {RED}退出程序{RESET}")
     print("-" * 40)
     sys.stdout.flush()
 
@@ -329,6 +331,31 @@ def run_playwright_test(project_root, test_type):
         return -1
 
 
+def run_simulated_test(project_root):
+    """运行仿真测试脚本（无 Browser 界面）"""
+    script = project_root / "scripts" / "simulated_test.py"
+    if not script.exists():
+        print(f"❌ 未找到测试脚本: {script}")
+        return -1
+
+    print(f"\n🚀 开始执行自动化测试（无 Browser 界面）: {script}")
+    sys.stdout.flush()
+
+    try:
+        result = subprocess.run([sys.executable, str(script)], cwd=project_root)
+        if result.returncode == 0:
+            print("✅ 测试脚本执行完成（退出码 0）")
+        else:
+            print(f"⚠️ 测试脚本退出，返回码: {result.returncode}")
+        return result.returncode
+    except KeyboardInterrupt:
+        print("\n⚠️ 检测到用户中断，已停止测试")
+        return INTERRUPTED_EXIT_CODE
+    except Exception as e:
+        print(f"❌ 执行测试时出错: {e}")
+        return -1
+
+
 def check_pnpm():
     """检查 pnpm 是否安装"""
     global pnpm_executable
@@ -441,7 +468,7 @@ def main():
             print_menu()
             
             try:
-                choice = input("\n请输入选项 (1/2/3/4): ").strip()
+                choice = input("\n请输入选项 (1/2/3/4/5): ").strip()
             except (EOFError, KeyboardInterrupt):
                 print("\n\n👋 程序已退出")
                 break
@@ -483,6 +510,23 @@ def main():
             elif choice == '3':
                 clear_console()
                 print_banner()
+                print("📡 开发服务器运行中 (http://localhost:5173)")
+                sys.stdout.flush()
+                result_code = run_simulated_test(project_root)
+                if result_code == INTERRUPTED_EXIT_CODE:
+                    clear_console()
+                    print_banner()
+                    print("📡 开发服务器运行中 (http://localhost:5173)")
+                    print()
+                    print("🧭 测试异常退出！已返回操作菜单")
+                    sys.stdout.flush()
+                    continue
+                time.sleep(1)
+                # 仿真测试完成后返回菜单
+
+            elif choice == '4':
+                clear_console()
+                print_banner()
                 print("🔄 正在重启开发服务...")
                 sys.stdout.flush()
                 stop_dev_server()
@@ -492,8 +536,8 @@ def main():
                 print("📡 开发服务器运行中 (http://localhost:5173)")
                 print("🧭 已进入操作菜单")
                 sys.stdout.flush()
-            
-            elif choice == '4':
+
+            elif choice == '5':
                 print("\n👋 感谢使用，再见！")
                 break
             

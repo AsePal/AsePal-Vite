@@ -850,16 +850,16 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
 
   console.log('\n');
   console.log(topBorder);
-  console.log(`║${' '.repeat(titleLeft)}${title}${' '.repeat(Math.max(0, titleRight))}║`);
-  console.log(midBorder);
+  console.log(' '.repeat(titleLeft) + title + ' '.repeat(Math.max(0, titleRight)));
+  console.log('─'.repeat(INNER_WIDTH + 2));
 
   const nameHeader = padDisplay('检查点', NAME_COL_WIDTH);
   const statusHeader = '状态';
   const headerUsed =
     displayWidth('  ') + displayWidth(nameHeader) + displayWidth('  ') + displayWidth(statusHeader);
   const headerTail = Math.max(0, INNER_WIDTH - headerUsed);
-  console.log(`║  ${nameHeader}  ${statusHeader}${' '.repeat(headerTail)}║`);
-  console.log(midBorder);
+  console.log('  ' + nameHeader + '  ' + statusHeader + ' '.repeat(headerTail));
+  console.log('─'.repeat(INNER_WIDTH + 2));
 
   for (const cp of checkpoints) {
     const name = padDisplay(cp.name, NAME_COL_WIDTH);
@@ -869,7 +869,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     const used = displayWidth(left) + displayWidth(name) + displayWidth(mid) + displayWidth(status);
     const remaining = INNER_WIDTH - used;
     const tail = remaining > 0 ? ' '.repeat(remaining) : '';
-    console.log(`║${left}${name}${mid}${status}${tail}║`);
+    console.log(left + name + mid + status + tail);
   }
 
   const failedCount = checkpoints.filter((c) => c.status === '❌ 失败').length;
@@ -881,13 +881,13 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
         ? `${warnCount} 项警告 ⚠️`
         : '所有检查点通过 ✅';
 
-  console.log(midBorder);
+  console.log('─'.repeat(INNER_WIDTH + 2));
   const summaryLabel = `  总结: ${summary}`;
   const summaryTail = Math.max(0, INNER_WIDTH - displayWidth(summaryLabel));
-  console.log(`║${summaryLabel}${' '.repeat(summaryTail)}║`);
+  console.log(summaryLabel + ' '.repeat(summaryTail));
   const countLabel = `  共 ${checkpoints.length} 个检查点`;
   const countTail = Math.max(0, INNER_WIDTH - displayWidth(countLabel));
-  console.log(`║${countLabel}${' '.repeat(countTail)}║`);
+  console.log(countLabel + ' '.repeat(countTail));
   console.log(bottomBorder);
   console.log('\n');
 });
