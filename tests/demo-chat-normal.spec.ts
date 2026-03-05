@@ -1,4 +1,3 @@
-
 import { test, expect } from '@playwright/test';
 
 // ---- 多语言选择器工具与词典（覆盖 中 / English / Tiếng Việt / ไทย） ----
@@ -67,6 +66,10 @@ const I18N = {
     'button:has-text("Xác nhận")',
     'button:has-text("Đồng ý")',
     'button:has-text("ยืนยัน")',
+    // 有些实现直接使用 "Sign out" / "Sign Out" 或者 "Logout" 作为确认按钮文本
+    'button:has-text("Sign out")',
+    'button:has-text("Sign Out")',
+    'button:has-text("Logout")',
   ],
   signInEntry: [
     'button:has-text("Go to sign in")',
@@ -81,7 +84,7 @@ const I18N = {
 test('Asepal AI前端自动化测试报告', async ({ page }) => {
   // 检查点记录
   const checkpoints: { name: string; status: '✅ 通过' | '❌ 失败' | '⚠️ 警告' }[] = [];
-  
+
   // log 函数会自动记录检查点
   const log = (step: string, status: '✅ 通过' | '❌ 失败' | '⚠️ 警告' = '✅ 通过') => {
     console.log(`\n✅ [STEP] ${step}`);
@@ -105,39 +108,42 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   await page.waitForLoadState('networkidle');
   await slow(800);
 
-
   //************************ */
   //        语言切换
   //************************ */
-  
-  log('0.5 开始多语言切换测试（登录前）');
-  
+
+  log('开始多语言切换测试');
+
   let languageSwitchSuccess = false;
-  
+
   try {
-    log('0.5.1 打开侧栏');
+    log('打开侧栏');
     // 多语言支持的侧栏按钮选择器
-    const openSidebarBtnPreLogin = page.locator(
-      [
-        '[data-tooltip="Open sidebar"]',
-        '[data-tooltip="打开侧栏"]',
-        '[data-tooltip="Mở thanh bên"]',
-        '[data-tooltip="เปิดแถบด้านข้าง"]',
-        '[aria-label="Open sidebar"]',
-        '[aria-label="打开侧栏"]',
-      ].join(', ')
-    ).first();
-    const closeSidebarBtnPreLogin = page.locator(
-      [
-        '[data-tooltip="Close sidebar"]',
-        '[data-tooltip="关闭侧栏"]',
-        '[data-tooltip="Đóng thanh bên"]',
-        '[data-tooltip="ปิดแถบด้านข้าง"]',
-        '[aria-label="Close sidebar"]',
-        '[aria-label="关闭侧栏"]',
-      ].join(', ')
-    ).first();
-    
+    const openSidebarBtnPreLogin = page
+      .locator(
+        [
+          '[data-tooltip="Open sidebar"]',
+          '[data-tooltip="打开侧栏"]',
+          '[data-tooltip="Mở thanh bên"]',
+          '[data-tooltip="เปิดแถบด้านข้าง"]',
+          '[aria-label="Open sidebar"]',
+          '[aria-label="打开侧栏"]',
+        ].join(', '),
+      )
+      .first();
+    const closeSidebarBtnPreLogin = page
+      .locator(
+        [
+          '[data-tooltip="Close sidebar"]',
+          '[data-tooltip="关闭侧栏"]',
+          '[data-tooltip="Đóng thanh bên"]',
+          '[data-tooltip="ปิดแถบด้านข้าง"]',
+          '[aria-label="Close sidebar"]',
+          '[aria-label="关闭侧栏"]',
+        ].join(', '),
+      )
+      .first();
+
     if ((await openSidebarBtnPreLogin.count()) > 0) {
       console.log('   侧栏当前是关闭状态，点击打开...');
       await openSidebarBtnPreLogin.click({ force: true });
@@ -156,7 +162,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     }
     await slow(500);
 
-    log('0.5.2 查找并测试语言切换功能');
+    log('查找并测试语言切换功能');
     // 支持的语言列表（根据截图）：中文、English、Tiếng Việt、ไทย
     // 直接在整个页面查找，不限制在 aside 内
     const langToggle = page
@@ -186,14 +192,14 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     }
 
     // 先打开语言菜单，检测当前选中的语言
-    log(`0.5.3 打开语言切换菜单并检测当前语言`);
+    log(`打开语言切换菜单并检测当前语言`);
     await langToggle.click();
     await slow(500);
 
     // 通过检查菜单中哪个选项有选中标记（如 svg 图标/对勾）来确定当前语言
     let originalLang = 'English'; // 默认英语
     const allLangOptions = ['中文', 'English', 'Tiếng Việt', 'ไทย'];
-    
+
     for (const lang of allLangOptions) {
       const optionBtn = page.locator(`button:has-text("${lang}")`).first();
       if ((await optionBtn.count()) > 0 && (await optionBtn.isVisible())) {
@@ -206,13 +212,13 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
         }
       }
     }
-    
+
     console.log(`   当前语言: ${originalLang}`);
 
     // 选择要切换的目标语言（避免中文和英文）
     const targetLanguages = ['Tiếng Việt', 'ไทย'];
     let targetLang = targetLanguages[0];
-    
+
     // 如果当前已是越南语，则切换为泰语
     if (originalLang.includes('Tiếng Việt')) {
       targetLang = targetLanguages[1];
@@ -225,20 +231,20 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     let toggleBox = await langToggle.boundingBox().catch(() => null);
     let targetButtons = page.locator(`button:has-text("${targetLang}")`);
     let count = await targetButtons.count();
-    
+
     if (count === 0) {
       throw new Error(`❌ 未找到目标语言选项: ${targetLang}`);
     }
-    
+
     let switched = false;
 
     for (let i = 0; i < count; i++) {
       const btn = targetButtons.nth(i);
       if (!(await btn.isVisible())) continue;
-      
+
       const box = await btn.boundingBox().catch(() => null);
       // 确保点击的是下拉菜单项（通常在切换器下方）
-      if (box && (!toggleBox || box.y > (toggleBox.y + (toggleBox.height || 0) / 2))) {
+      if (box && (!toggleBox || box.y > toggleBox.y + (toggleBox.height || 0) / 2)) {
         await btn.click();
         await slow(1000);
         switched = true;
@@ -259,32 +265,34 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
       }
     }
 
-  log('验证语言已切换');
-  await slow(500);
-  console.log(`   ✓ 语言已切换到: ${targetLang}`);
+    log('验证语言已切换');
+    await slow(500);
+    console.log(`   ✓ 语言已切换到: ${targetLang}`);
 
-  // 返回主页并停留 3 秒
-  log('验证系统语言刷新.....');
-  await page.goto('http://localhost:5173/');
-  await page.waitForLoadState('networkidle');
-  await slow(2500);
+    // 返回主页并停留 3 秒
+    log('验证系统语言刷新.....');
+    await page.goto('http://localhost:5173/');
+    await page.waitForLoadState('networkidle');
+    await slow(2500);
 
-    // 切换回英语 
+    // 切换回英语
     log(`切换回英语`);
 
     // 先打开侧栏（返回主页后侧栏可能已关闭）
     // 多语言支持：Open sidebar / 打开侧栏 / Mở thanh bên / เปิดแถบด้านข้าง
-    const openSidebarBtnBack = page.locator(
-      [
-        '[data-tooltip="Open sidebar"]',
-        '[data-tooltip="打开侧栏"]',
-        '[data-tooltip="Mở thanh bên"]',
-        '[data-tooltip="เปิดแถบด้านข้าง"]',
-        '[aria-label="Open sidebar"]',
-        '[aria-label="打开侧栏"]',
-        '[aria-label="Mở thanh bên"]',
-      ].join(', ')
-    ).first();
+    const openSidebarBtnBack = page
+      .locator(
+        [
+          '[data-tooltip="Open sidebar"]',
+          '[data-tooltip="打开侧栏"]',
+          '[data-tooltip="Mở thanh bên"]',
+          '[data-tooltip="เปิดแถบด้านข้าง"]',
+          '[aria-label="Open sidebar"]',
+          '[aria-label="打开侧栏"]',
+          '[aria-label="Mở thanh bên"]',
+        ].join(', '),
+      )
+      .first();
 
     if ((await openSidebarBtnBack.count()) > 0) {
       console.log('   打开侧栏...');
@@ -332,7 +340,9 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     let clickedEnglish = false;
     for (let i = 0; i < englishCount; i++) {
       const btn = englishBtns.nth(i);
-      const isRendered = await btn.evaluate((el: HTMLElement) => el.offsetParent !== null).catch(() => false);
+      const isRendered = await btn
+        .evaluate((el: HTMLElement) => el.offsetParent !== null)
+        .catch(() => false);
       if (isRendered) {
         await btn.click({ force: true });
         await slow(1000);
@@ -346,7 +356,9 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
       // 最终备用：通过 evaluate 直接在 DOM 中点击
       await page.evaluate(() => {
         const btns = Array.from(document.querySelectorAll('button'));
-        const target = btns.find(b => b.innerText?.trim() === 'English' && (b as HTMLElement).offsetParent !== null);
+        const target = btns.find(
+          (b) => b.innerText?.trim() === 'English' && (b as HTMLElement).offsetParent !== null,
+        );
         if (target) (target as HTMLElement).click();
       });
       await slow(1000);
@@ -376,10 +388,11 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     }
 
     log('✓ 多语言切换测试完成');
-
   } catch (error) {
     console.error('\n❌ 多语言切换测试失败:', error);
-    throw new Error(`多语言切换测试失败: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `多语言切换测试失败: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 
   // 确保语言切换测试成功才继续
@@ -507,7 +520,6 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     console.log('   检测到AI开始思考...');
   } catch {
     console.log('   未检测到思考状态，可能直接开始回复');
-
   }
   //******************* */
   //    获取回复
@@ -562,37 +574,39 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
 
   await slow(2000);
 
-
-   //******************* */
+  //******************* */
   //     退出登录
   //******************* */
-
 
   log('7. 开始退出登录流程');
 
   log('7.0 打开侧栏');
 
   // 多语言支持的侧栏按钮选择器
-  const openSidebarBtn = page.locator(
-    [
-      '[data-tooltip="Open sidebar"]',
-      '[data-tooltip="打开侧栏"]',
-      '[data-tooltip="Mở thanh bên"]',
-      '[data-tooltip="เปิดแถบด้านข้าง"]',
-      '[aria-label="Open sidebar"]',
-      '[aria-label="打开侧栏"]',
-    ].join(', ')
-  ).first();
-  const closeSidebarBtn = page.locator(
-    [
-      '[data-tooltip="Close sidebar"]',
-      '[data-tooltip="关闭侧栏"]',
-      '[data-tooltip="Đóng thanh bên"]',
-      '[data-tooltip="ปิดแถบด้านข้าง"]',
-      '[aria-label="Close sidebar"]',
-      '[aria-label="关闭侧栏"]',
-    ].join(', ')
-  ).first();
+  const openSidebarBtn = page
+    .locator(
+      [
+        '[data-tooltip="Open sidebar"]',
+        '[data-tooltip="打开侧栏"]',
+        '[data-tooltip="Mở thanh bên"]',
+        '[data-tooltip="เปิดแถบด้านข้าง"]',
+        '[aria-label="Open sidebar"]',
+        '[aria-label="打开侧栏"]',
+      ].join(', '),
+    )
+    .first();
+  const closeSidebarBtn = page
+    .locator(
+      [
+        '[data-tooltip="Close sidebar"]',
+        '[data-tooltip="关闭侧栏"]',
+        '[data-tooltip="Đóng thanh bên"]',
+        '[data-tooltip="ปิดแถบด้านข้าง"]',
+        '[aria-label="Close sidebar"]',
+        '[aria-label="关闭侧栏"]',
+      ].join(', '),
+    )
+    .first();
 
   console.log(`   "Open sidebar" 按钮数量: ${await openSidebarBtn.count()}`);
   console.log(`   "Close sidebar" 按钮数量: ${await closeSidebarBtn.count()}`);
@@ -651,7 +665,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
         if (!(await btn.isVisible())) continue;
         const box = await btn.boundingBox().catch(() => null);
         // 下拉项通常在切换器下方（y 更大），选择位于 toggle 之下的按钮
-        if (box && (!toggleBox || box.y > (toggleBox.y + (toggleBox.height || 0) / 2))) {
+        if (box && (!toggleBox || box.y > toggleBox.y + (toggleBox.height || 0) / 2)) {
           console.log(`   切换语言到: ${target} (使用第 ${i} 个可见匹配)`);
           await btn.click().catch(() => {});
           await slow(800);
@@ -669,7 +683,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   } catch (e) {
     console.warn('   语言切换步骤出现异常，继续执行测试');
   }
- 
+
   const userProfileBtn = multi(page, I18N.openProfile).first();
   console.log(`   用户信息按钮数量: ${await userProfileBtn.count()}`);
 
@@ -757,24 +771,36 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   if (!passed) {
     console.warn('⚠️ 可能未成功退出登录（超时未检测到登录入口或用户名仍可见）');
     // 更新最后一个检查点状态
-    const lastIdx = checkpoints.findIndex(c => c.name.includes('验证已退出'));
+    const lastIdx = checkpoints.findIndex((c) => c.name.includes('验证已退出'));
     if (lastIdx >= 0) checkpoints[lastIdx].status = '⚠️ 警告';
   }
 
   log('🎉 测试流程全部完成！');
 
   // 测试报告摘要
-  
+
   const COMBINING_RANGES: Array<[number, number]> = [
-    [0x0300, 0x036f], [0x1ab0, 0x1aff], [0x1dc0, 0x1dff], [0x20d0, 0x20ff], [0xfe20, 0xfe2f],
+    [0x0300, 0x036f],
+    [0x1ab0, 0x1aff],
+    [0x1dc0, 0x1dff],
+    [0x20d0, 0x20ff],
+    [0xfe20, 0xfe2f],
     [0xfe00, 0xfe0f], // 变体选择符
     [0xe0100, 0xe01ef], // 补充变体选择符
   ];
   const WIDE_RANGES: Array<[number, number]> = [
-    [0x1100, 0x115f], [0x2329, 0x232a], [0x2e80, 0xa4cf], [0xac00, 0xd7a3], [0xf900, 0xfaff],
-    [0xfe10, 0xfe19], [0xfe30, 0xfe6f], [0xff00, 0xff60], [0xffe0, 0xffe6],
+    [0x1100, 0x115f],
+    [0x2329, 0x232a],
+    [0x2e80, 0xa4cf],
+    [0xac00, 0xd7a3],
+    [0xf900, 0xfaff],
+    [0xfe10, 0xfe19],
+    [0xfe30, 0xfe6f],
+    [0xff00, 0xff60],
+    [0xffe0, 0xffe6],
     [0x1f000, 0x1ffff], // Emoji 等补充字符平面
-    [0x20000, 0x2fffd], [0x30000, 0x3fffd],
+    [0x20000, 0x2fffd],
+    [0x30000, 0x3fffd],
   ];
 
   const wcwidthChar = (ch: string) => {
@@ -829,7 +855,8 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
 
   const nameHeader = padDisplay('检查点', NAME_COL_WIDTH);
   const statusHeader = '状态';
-  const headerUsed = displayWidth('  ') + displayWidth(nameHeader) + displayWidth('  ') + displayWidth(statusHeader);
+  const headerUsed =
+    displayWidth('  ') + displayWidth(nameHeader) + displayWidth('  ') + displayWidth(statusHeader);
   const headerTail = Math.max(0, INNER_WIDTH - headerUsed);
   console.log(`║  ${nameHeader}  ${statusHeader}${' '.repeat(headerTail)}║`);
   console.log(midBorder);
@@ -845,9 +872,14 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     console.log(`║${left}${name}${mid}${status}${tail}║`);
   }
 
-  const failedCount = checkpoints.filter(c => c.status === '❌ 失败').length;
-  const warnCount = checkpoints.filter(c => c.status === '⚠️ 警告').length;
-  const summary = failedCount > 0 ? `${failedCount} 项失败 ❌` : warnCount > 0 ? `${warnCount} 项警告 ⚠️` : '所有检查点通过 ✅';
+  const failedCount = checkpoints.filter((c) => c.status === '❌ 失败').length;
+  const warnCount = checkpoints.filter((c) => c.status === '⚠️ 警告').length;
+  const summary =
+    failedCount > 0
+      ? `${failedCount} 项失败 ❌`
+      : warnCount > 0
+        ? `${warnCount} 项警告 ⚠️`
+        : '所有检查点通过 ✅';
 
   console.log(midBorder);
   const summaryLabel = `  总结: ${summary}`;
