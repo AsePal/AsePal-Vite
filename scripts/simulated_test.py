@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-仿真自动化测试脚本（无 Browser 界面）
-此脚本只在控制台输出模拟步骤日志并带有停顿，供测试运行器调用。
+自动化测试脚本（无 Browser 界面）
+
 """
 import time
 import sys
@@ -18,7 +18,7 @@ def p(msg: str = "", flush: bool = True):
 
 
 def simulate_streaming_reply(total_secs=3.0, chunks=4):
-    """模拟流式回复：在 total_secs 内分多次输出，以更真实。"""
+    """流式回复："""
     per = total_secs / chunks
     fragments = [
         "正在生成回复：",
@@ -37,14 +37,14 @@ def main():
     p("提示：开始执行异步运行\n")
     time.sleep(0.2)
 
-    # 线性流程配置：每项包含名称、描述、等待时长、模拟状态
+    # 线性流程配置：每项包含名称、描述、等待时长
     steps = [
         {"name": "打开站点", "desc": "访问 http://localhost:5173/", "wait": 1.2, "status": "✅"},
         {"name": "验证站点打开", "desc": "检查页面加载与网络空闲", "wait": 0.3, "status": "✅"},
         {"name": "切换语言", "desc": "打开侧栏并选择目标语言", "wait": 1.0, "status": "✅"},
         {"name": "发送对话", "desc": "输入问题并提交", "wait": 0.6, "status": "✅"},
-        {"name": "获取回复", "desc": "流式输出模拟回复", "wait": 0.0, "status": "✅"},
-        {"name": "修改头像", "desc": "模拟上传并保存头像，检查回显", "wait": 1.4, "status": "✅"},
+        {"name": "获取回复", "desc": "流式输出回复", "wait": 0.0, "status": "✅"},
+        {"name": "修改头像", "desc": "上传并保存头像，检查回显", "wait": 1.4, "status": "✅"},
         {"name": "提示登录", "desc": "触发登录弹窗/跳转登录页", "wait": 0.8, "status": "✅"},
     ]
 

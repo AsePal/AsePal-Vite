@@ -1,4 +1,16 @@
 import { test, expect } from '@playwright/test';
+import {
+  installInputGuard,
+  updateTestStep,
+  createWindowMonitor,
+  ensureWindowVisible,
+  safeClick,
+  safeFill,
+  withRetry,
+  ensureSidebarState,
+  ensureOnPage,
+  dismissAllModals,
+} from './_helpers/inputGuard';
 
 // ---- 多语言选择器工具与词典（覆盖 中 / English / Tiếng Việt / ไทย） ----
 const multi = (page: any, selectors: string[]) => page.locator(selectors.join(', '));
@@ -82,12 +94,22 @@ const I18N = {
 };
 
 test('Asepal AI前端自动化测试报告', async ({ page }) => {
+  // ★ 注入输入保护层：显示醒目的测试警告标签
+  // （配合 playwright.config.ts 中的 --kiosk 模式，窗口也无法被最小化/关闭）
+  await installInputGuard(page, { testName: '🟢 Normal 测试场景' });
+
+  // ★ 启动窗口状态监控器：检测并自动恢复最小化的窗口
+  const windowMonitor = createWindowMonitor(page, 2000);
+  windowMonitor.start();
+
   // 检查点记录
   const checkpoints: { name: string; status: '✅ 通过' | '❌ 失败' | '⚠️ 警告' }[] = [];
 
-  // log 函数会自动记录检查点
+  // log 函数会自动记录检查点，并更新页面上的步骤显示
   const log = (step: string, status: '✅ 通过' | '❌ 失败' | '⚠️ 警告' = '✅ 通过') => {
     console.log(`\n✅ [STEP] ${step}`);
+    // 更新页面上的步骤显示（fire-and-forget，不阻塞）
+    updateTestStep(page, step).catch(() => {});
     // 只记录主要步骤（不以空格开头的、或者是关键节点）
     if (!step.startsWith(' ') && !step.startsWith('✓')) {
       checkpoints.push({ name: step, status });
@@ -890,4 +912,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   console.log(countLabel + ' '.repeat(countTail));
   console.log(bottomBorder);
   console.log('\n');
+
+  // ★ 停止窗口监控器
+  windowMonitor.stop();
 });

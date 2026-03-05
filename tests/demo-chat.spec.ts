@@ -1,11 +1,15 @@
 // demo-only Playwright test for competition presentation (precise mini user flow)
 import { test, expect } from '@playwright/test';
+import { installInputGuard } from './_helpers/inputGuard';
 import * as fs from 'fs';
 import { exec } from 'child_process';
 
 test('mini user flow: first-visit -> login -> one chat -> logout (presentation)', async ({
   page,
 }) => {
+  // ★ 注入输入保护层：阻止真实用户的鼠标/键盘/触摸操作干扰测试
+  await installInputGuard(page);
+
   const log = (step: string) => console.log(`\n✅ [STEP] ${step}`);
   const slow = async (ms = 800) => await page.waitForTimeout(ms);
   const username = 'Dev-test-001';

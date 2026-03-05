@@ -41,10 +41,34 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
-    /* 启动时窗口最小化（任务栏可见，点击后可查看） */
+    /**
+     * 防人为干扰配置：
+     * - headless: false  → 保持浏览器窗口可见（实时观察）
+     * - --kiosk          → Kiosk（全屏）模式：隐藏地址栏、标题栏，
+     *                       没有最小化 / 最大化 / 关闭按钮，
+     *                       用户无法通过窗口控件关闭或最小化浏览器。
+     *                       （Alt+F4 也会被页面级的 beforeunload 拦截，
+     *                        且 Playwright 控制的浏览器默认忽略 beforeunload。）
+     * - --disable-pinch  → 禁用缩放手势
+     * - --overscroll-history-navigation=0 → 禁用滑动返回
+     *
+     * 页面内的所有用户点击/键盘事件由 inputGuard 脚本拦截，
+     * 参见 tests/_helpers/inputGuard.ts。
+     */
+    headless: false,
     launchOptions: {
-      args: ['--start-minimized'],
+      args: [
+        '--kiosk', // 全屏 kiosk 模式，隐藏标题栏和窗口按钮
+        '--disable-pinch', // 禁用缩放手势
+        '--overscroll-history-navigation=0', // 禁用滑动返回
+        '--disable-infobars', // 隐藏 "Chrome is being controlled" 提示条
+        '--disable-session-crashed-bubble', // 隐藏崩溃恢复提示
+        '--noerrdialogs', // 隐藏错误对话框
+      ],
     },
+
+    /* 录像：可在测试失败时回放，方便排查 */
+    video: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */
