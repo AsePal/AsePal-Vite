@@ -337,22 +337,37 @@ def run_simulated_test(project_root):
     if not script.exists():
         print(f"❌ 未找到测试脚本: {script}")
         return -1
-
-    print(f"\n🚀 开始执行自动化测试（无 Browser 界面）: {script}")
+    # 打印可能包含 emoji，某些 Windows 控制台使用 GBK 编码会抛出 UnicodeEncodeError
+    try:
+        print(f"\n🚀 开始执行自动化测试（无 Browser 界面）: {script}")
+    except UnicodeEncodeError:
+        print(f"\n开始执行自动化测试（无 Browser 界面）: {script}")
     sys.stdout.flush()
 
     try:
         result = subprocess.run([sys.executable, str(script)], cwd=project_root)
-        if result.returncode == 0:
-            print("✅ 测试脚本执行完成（退出码 0）")
-        else:
-            print(f"⚠️ 测试脚本退出，返回码: {result.returncode}")
+        try:
+            if result.returncode == 0:
+                print("✅ 测试脚本执行完成（退出码 0）")
+            else:
+                print(f"⚠️ 测试脚本退出，返回码: {result.returncode}")
+        except UnicodeEncodeError:
+            if result.returncode == 0:
+                print("测试脚本执行完成（退出码 0）")
+            else:
+                print(f"测试脚本退出，返回码: {result.returncode}")
         return result.returncode
     except KeyboardInterrupt:
-        print("\n⚠️ 检测到用户中断，已停止测试")
+        try:
+            print("\n⚠️ 检测到用户中断，已停止测试")
+        except UnicodeEncodeError:
+            print("\n检测到用户中断，已停止测试")
         return INTERRUPTED_EXIT_CODE
     except Exception as e:
-        print(f"❌ 执行测试时出错: {e}")
+        try:
+            print(f"❌ 执行测试时出错: {e}")
+        except UnicodeEncodeError:
+            print(f"执行测试时出错: {e}")
         return -1
 
 

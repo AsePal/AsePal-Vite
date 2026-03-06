@@ -9,7 +9,21 @@ import sys
 
 
 def p(msg: str = "", flush: bool = True):
-    print(msg)
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        try:
+            enc = sys.stdout.encoding or 'utf-8'
+            print(msg.encode(enc, errors='replace').decode(enc))
+        except Exception:
+            try:
+                print(msg.encode('ascii', errors='ignore').decode('ascii'))
+            except Exception:
+                # 最后兜底，直接写到 stdout
+                try:
+                    sys.stdout.write(msg + "\n")
+                except Exception:
+                    pass
     if flush:
         try:
             sys.stdout.flush()
