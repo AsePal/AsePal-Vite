@@ -890,7 +890,8 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
   const colorizeStatus = (status: string) => {
     if (status.includes('[OK]')) return `${COLOR_GREEN}${status}${COLOR_RESET}`;
     if (status.includes('[WARN]')) return `${COLOR_YELLOW}${status}${COLOR_RESET}`;
-    if (status.includes('[FAIL]') || status.includes('[ERR]')) return `${COLOR_RED}${status}${COLOR_RESET}`;
+    if (status.includes('[FAIL]') || status.includes('[ERR]'))
+      return `${COLOR_RED}${status}${COLOR_RESET}`;
     return status;
   };
 
@@ -900,7 +901,8 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     const mid = '  ';
     const statusPlain = cp.status;
     const statusColored = colorizeStatus(statusPlain);
-    const used = displayWidth(left) + displayWidth(name) + displayWidth(mid) + displayWidth(statusPlain);
+    const used =
+      displayWidth(left) + displayWidth(name) + displayWidth(mid) + displayWidth(statusPlain);
     const remaining = INNER_WIDTH - used;
     const tail = remaining > 0 ? ' '.repeat(remaining) : '';
     console.log(left + name + mid + statusColored + tail);

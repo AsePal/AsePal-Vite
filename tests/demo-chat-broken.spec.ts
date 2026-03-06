@@ -212,7 +212,8 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     const colorizeStatus = (status: string) => {
       if (status.includes('[OK]')) return `${COLOR_GREEN}${status}${COLOR_RESET}`;
       if (status.includes('[WARN]')) return `${COLOR_YELLOW}${status}${COLOR_RESET}`;
-      if (status.includes('[FAIL]') || status.includes('[ERR]')) return `${COLOR_RED}${status}${COLOR_RESET}`;
+      if (status.includes('[FAIL]') || status.includes('[ERR]'))
+        return `${COLOR_RED}${status}${COLOR_RESET}`;
       return status;
     };
 
