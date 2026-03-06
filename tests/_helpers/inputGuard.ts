@@ -70,7 +70,7 @@ export async function withRetry<T>(
     } catch (error) {
       lastError = error as Error;
       console.warn(
-        `   ⚠️ ${description} 第 ${attempt}/${maxRetries} 次尝试失败: ${lastError.message}`,
+        `   [WARN] ${description} 第 ${attempt}/${maxRetries} 次尝试失败: ${lastError.message}`,
       );
       if (attempt < maxRetries) {
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
@@ -81,7 +81,7 @@ export async function withRetry<T>(
   if (throwOnFail) {
     throw new Error(`${description} 在 ${maxRetries} 次尝试后仍然失败: ${lastError?.message}`);
   }
-  console.warn(`   ❌ ${description} 最终失败，但继续执行`);
+  console.warn(`   [ERR] ${description} 最终失败，但继续执行`);
   return null;
 }
 
@@ -178,7 +178,7 @@ export async function waitForState(
   while (Date.now() - startTime < timeout) {
     try {
       if (await condition()) {
-        console.log(`   ✓ ${description} 已达成`);
+        console.log(`   [OK] ${description} 已达成`);
         return true;
       }
     } catch {
@@ -187,7 +187,7 @@ export async function waitForState(
     await page.waitForTimeout(interval);
   }
 
-  console.warn(`   ⚠️ 等待 ${description} 超时`);
+  console.warn(`   [WARN] 等待 ${description} 超时`);
   return false;
 }
 
@@ -246,13 +246,13 @@ export async function ensureWindowVisible(page: Page): Promise<boolean> {
     const { bounds } = await client.send('Browser.getWindowBounds', { windowId });
 
     if (bounds.windowState === 'minimized') {
-      console.log('   ⚠️ 检测到窗口最小化，正在恢复...');
+      console.log('   [WARN] 检测到窗口最小化，正在恢复...');
       await client.send('Browser.setWindowBounds', {
         windowId,
         bounds: { windowState: 'normal' },
       });
       await page.waitForTimeout(500);
-      console.log('   ✓ 窗口已恢复');
+      console.log('   [OK] 窗口已恢复');
     }
     return true;
   } catch (error) {
@@ -282,7 +282,7 @@ export function createWindowMonitor(
         if (!isRunning) return;
         await ensureWindowVisible(page).catch(() => {});
       }, intervalMs);
-      console.log('[WindowMonitor] ✅ 窗口监控已启动');
+      console.log('[WindowMonitor] [OK] 窗口监控已启动');
     },
     stop: () => {
       isRunning = false;
@@ -290,7 +290,7 @@ export function createWindowMonitor(
         clearInterval(timer);
         timer = null;
       }
-      console.log('[WindowMonitor] ⏹️ 窗口监控已停止');
+      console.log('[WindowMonitor] [STOP] 窗口监控已停止');
     },
   };
 }
@@ -320,7 +320,7 @@ export async function ensureOnPage(
       : expectedUrlPattern.test(currentUrl);
 
   if (!matches) {
-    console.warn(`   ⚠️ 当前页面 ${currentUrl} 不符合预期，正在导航到 ${fallbackUrl}`);
+    console.warn(`   [WARN] 当前页面 ${currentUrl} 不符合预期，正在导航到 ${fallbackUrl}`);
     await page.goto(fallbackUrl);
     await page.waitForLoadState('networkidle');
     return false;

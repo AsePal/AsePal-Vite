@@ -7,6 +7,12 @@
 import time
 import sys
 
+# 颜色常量（ANSI）
+GREEN = "\x1b[32m"
+YELLOW = "\x1b[33m"
+RED = "\x1b[31m"
+RESET = "\x1b[0m"
+
 
 def p(msg: str = "", flush: bool = True):
     try:
@@ -53,13 +59,13 @@ def main():
 
     # 线性流程配置：每项包含名称、描述、等待时长
     steps = [
-        {"name": "打开站点", "desc": "访问 http://localhost:5173/", "wait": 1.2, "status": "✅"},
-        {"name": "验证站点打开", "desc": "检查页面加载与网络空闲", "wait": 0.3, "status": "✅"},
-        {"name": "切换语言", "desc": "打开侧栏并选择目标语言", "wait": 1.0, "status": "✅"},
-        {"name": "发送对话", "desc": "输入问题并提交", "wait": 0.6, "status": "✅"},
-        {"name": "获取回复", "desc": "流式输出回复", "wait": 0.0, "status": "✅"},
-        {"name": "修改头像", "desc": "上传并保存头像，检查回显", "wait": 1.4, "status": "✅"},
-        {"name": "提示登录", "desc": "触发登录弹窗/跳转登录页", "wait": 0.8, "status": "✅"},
+        {"name": "打开站点", "desc": "访问 http://localhost:5173/", "wait": 1.2, "status": "[OK]"},
+        {"name": "验证站点打开", "desc": "检查页面加载与网络空闲", "wait": 0.3, "status": "[OK]"},
+        {"name": "切换语言", "desc": "打开侧栏并选择目标语言", "wait": 1.0, "status": "[OK]"},
+        {"name": "发送对话", "desc": "输入问题并提交", "wait": 0.6, "status": "[OK]"},
+        {"name": "获取回复", "desc": "流式输出回复", "wait": 0.0, "status": "[OK]"},
+        {"name": "修改头像", "desc": "上传并保存头像，检查回显", "wait": 1.4, "status": "[OK]"},
+        {"name": "提示登录", "desc": "触发登录弹窗/跳转登录页", "wait": 0.8, "status": "[OK]"},
     ]
 
     # 执行并输出每一步，步骤间保留空行
@@ -68,11 +74,21 @@ def main():
         time.sleep(step['wait'])
         if step['name'] == '获取回复':
             simulate_streaming_reply(total_secs=3.0, chunks=4)
-        p(f"状态: {step['status']}")
+        # 彩色状态输出
+        status = step.get('status', '')
+        if '[OK]' in status:
+            color = GREEN
+        elif '[WARN]' in status or '[WARN' in status:
+            color = YELLOW
+        elif '[FAIL]' in status or '[FAIL' in status or '[ERR]' in status:
+            color = RED
+        else:
+            color = RESET
+        p(f"状态: {color}{status}{RESET}")
         p("")
 
     # 汇总与结束：生成测试报告
-    p("🎉 测试完成！\n")
+    p("[DONE] 测试完成！\n")
 
     # 生成基于显示宽度的表格报告，避免中文/emoji 导致边框错位
     import unicodedata
@@ -156,19 +172,36 @@ def main():
     for step in steps:
         full = f"{step['name']} - {step['desc']}"
         lines = wrap_display(full, name_w)
-        status_text = f"{step['status']}  通过"
+        status_label = step.get('status', '')
+        # 根据状态选择颜色
+        if '[OK]' in status_label:
+            s_color = GREEN
+            status_suffix = '通过'
+        elif '[WARN]' in status_label:
+            s_color = YELLOW
+            status_suffix = '警告'
+        elif '[FAIL]' in status_label or '[ERR]' in status_label:
+            s_color = RED
+            status_suffix = '失败'
+        else:
+            s_color = RESET
+            status_suffix = ''
+
+        colored_status = f"{s_color}{status_label}{RESET} {status_suffix}"
         # 首行带状态
         first = pad_display(lines[0], name_w)
-        p(f" {first}  {status_text}")
+        p(f" {first}  {colored_status}")
         # 其余行只填充名称列
         for ln in lines[1:]:
             p(f" {pad_display(ln, name_w)}")
 
     p('─' * TARGET_INNER)
-    summary = f"共 {len(steps)} 个检查点 — 全部通过 ✅"
+    summary = f"共 {len(steps)} 个检查点 — 全部通过 [OK]"
     sum_lines = wrap_display(summary, TARGET_INNER - 2)
     for sl in sum_lines:
-        p(' ' + pad_display(sl, TARGET_INNER - 1))
+        # 在汇总中对 [OK]/[FAIL]/[WARN] 做颜色处理
+        sl_colored = sl.replace('[OK]', f"{GREEN}[OK]{RESET}").replace('[WARN]', f"{YELLOW}[WARN]{RESET}").replace('[FAIL]', f"{RED}[FAIL]{RESET}")
+        p(' ' + pad_display(sl_colored, TARGET_INNER - 1))
     p(bot + '\n')
 
 
@@ -182,5 +215,5 @@ if __name__ == '__main__':
             time.sleep(0.5 - elapsed)
         sys.exit(0)
     except KeyboardInterrupt:
-        p("\n⚠️ 仿真测试被用户中断")
+        p("\n[WARN] 仿真测试被用户中断")
         sys.exit(130)

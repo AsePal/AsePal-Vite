@@ -10,7 +10,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
   // ★ 注入输入保护层：阻止真实用户的鼠标/键盘/触摸操作干扰测试
   await installInputGuard(page);
 
-  const log = (step: string) => console.log(`\n✅ [STEP] ${step}`);
+  const log = (step: string) => console.log(`\n[STEP] ${step}`);
   const slow = async (ms = 800) => await page.waitForTimeout(ms);
   const username = 'Dev-test-001';
   const password = '456456456';
@@ -256,7 +256,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
 
       // 如果点击后确认按钮没有出现，说明退出按钮失效
       if (confirmCount === 0) {
-        console.error('❌ 退出按钮点击后未响应。停止测试并尝试打开测试报告...');
+        console.error('[ERR] 退出按钮点击后未响应。停止测试并尝试打开测试报告...');
 
         // 尝试打开常见的本地报告路径（Windows start 命令）
         const candidates = [
@@ -308,7 +308,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
 
         if (confirmCount === 0) {
           console.error(
-            '❌ 退出按钮点击后未响应（可能已被测试注入禁用）。停止测试并尝试打开测试报告...',
+            '[ERR] 退出按钮点击后未响应（可能已被测试注入禁用）。停止测试并尝试打开测试报告...',
           );
           const candidates = [
             'playwright-report/index.html',
@@ -372,7 +372,7 @@ test('mini user flow: first-visit -> login -> one chat -> logout (presentation)'
   }
 
   if (!passed) {
-    console.warn('⚠️ 可能未成功退出登录（超时未检测到登录入口或用户名仍可见）');
+    console.warn('[WARN] 可能未成功退出登录（超时未检测到登录入口或用户名仍可见）');
     throw new Error('可能未成功退出登录（超时）');
   }
 });

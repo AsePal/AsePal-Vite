@@ -123,7 +123,7 @@ def open_report(project_root):
     report_path = project_root / "playwright-report" / "index.html"
     
     if report_path.exists():
-        print(f"\n📊 正在打开测试报告: {report_path}")
+        print(f"\n[REPORT] 正在打开测试报告: {report_path}")
         sys.stdout.flush()
         # 使用系统默认浏览器打开
         if os.name == 'nt':
@@ -132,7 +132,7 @@ def open_report(project_root):
             webbrowser.open(f"file://{report_path}")
         return True
     else:
-        print(f"\n⚠️ 未找到测试报告文件: {report_path}")
+        print(f"\n[WARN] 未找到测试报告文件: {report_path}")
         return False
 
 
@@ -141,7 +141,7 @@ def start_dev_server(project_root):
     global dev_server_process
     global pnpm_executable
     
-    print("🚀 正在启动开发服务器 (pnpm dev)...")
+    print(">> 正在启动开发服务器 (pnpm dev)...")
     print("   请等待服务器启动完成...")
     sys.stdout.flush()
     
@@ -180,14 +180,14 @@ def start_dev_server(project_root):
     while True:
         # 如果进程已退出，直接返回失败
         if dev_server_process.poll() is not None:
-            print("\n⚠️ 开发服务器进程已退出，无法启动")
+            print("\n[WARN] 开发服务器进程已退出，无法启动")
             sys.stdout.flush()
             break
         try:
             with urllib.request.urlopen(url, timeout=2) as resp:
                 status = resp.getcode()
                 if status and status < 400:
-                    print("\n✅ 开发服务器已可用: http://localhost:5173")
+                    print("\n[OK] 开发服务器已可用: http://localhost:5173")
                     sys.stdout.flush()
                     break
         except (urllib.error.URLError, Exception):
@@ -195,7 +195,7 @@ def start_dev_server(project_root):
             pass
 
         if time.time() - start_time > timeout:
-            print(f"\n⚠️ 等待开发服务器超时 ({timeout}s)。继续执行，但可能无法访问 http://localhost:5173")
+            print(f"\n[WARN] 等待开发服务器超时 ({timeout}s)。继续执行，但可能无法访问 http://localhost:5173")
             sys.stdout.flush()
             break
 
@@ -210,7 +210,7 @@ def stop_dev_server():
     global dev_server_process
     
     if dev_server_process:
-        print("\n🛑 正在停止开发服务器...")
+        print("\n[STOP] 正在停止开发服务器...")
         sys.stdout.flush()
         try:
             if os.name == 'nt':
@@ -228,9 +228,9 @@ def stop_dev_server():
                 dev_server_process.wait(timeout=3)
             except:
                 pass
-            print("✅ 开发服务器已停止")
+            print("[OK] 开发服务器已停止")
         except Exception as e:
-            print(f"⚠️ 停止服务器时出现警告: {e}")
+            print(f"[WARN] 停止服务器时出现警告: {e}")
         finally:
             dev_server_process = None
         sys.stdout.flush()
@@ -249,7 +249,7 @@ def run_playwright_test(project_root, test_type):
     else:
         cmd_args = [pnpm_cmd, "run", "demo:playwright:normal"]
     
-    print(f"\n🚀 playwright已开始执行")
+    print(f"\n>> playwright已开始执行")
     print("-" * 50)
     print(f"执行命令: {' '.join(cmd_args)}\n")
     sys.stdout.flush()
@@ -281,7 +281,7 @@ def run_playwright_test(project_root, test_type):
                 return_code = process.poll()
         except KeyboardInterrupt:
             # Ctrl+C 只会到达 Python 进程，子进程不会收到
-            print("\n\n⚠️ 检测到用户中断，正在停止当前自动化测试...")
+            print("\n\n[WARN] 检测到用户中断，正在停止当前自动化测试...")
             sys.stdout.flush()
 
             # 强制终止子进程树
@@ -307,7 +307,7 @@ def run_playwright_test(project_root, test_type):
 
             # 恢复窗口状态
             set_console_topmost(False)
-            print("↩️ 已中断当前测试，返回菜单")
+            print("[RET] 已中断当前测试，返回菜单")
             sys.stdout.flush()
             return INTERRUPTED_EXIT_CODE
         finally:
@@ -316,16 +316,16 @@ def run_playwright_test(project_root, test_type):
         
         print("\n" + "=" * 50)
         if return_code == 0:
-            print("✅ 测试执行完成 - 全部通过")
+            print("[OK] 测试执行完成 - 全部通过")
         else:
-            print(f"❌ 测试执行完成 - 存在失败 (返回码: {return_code})")
+            print(f"[FAIL] 测试执行完成 - 存在失败 (返回码: {return_code})")
         print("=" * 50)
         sys.stdout.flush()
         
         return return_code
     except Exception as e:
         set_console_topmost(False)
-        print(f"\n❌ 执行测试时出错: {e}")
+        print(f"\n[ERR] 执行测试时出错: {e}")
         sys.stdout.flush()
         return -1
 
@@ -334,11 +334,11 @@ def run_simulated_test(project_root):
     """运行仿真测试脚本（无 Browser 界面）"""
     script = project_root / "scripts" / "simulated_test.py"
     if not script.exists():
-        print(f"❌ 未找到测试脚本: {script}")
+        print(f"ERROR: 未找到测试脚本: {script}")
         return -1
     # 打印可能包含 emoji，某些 Windows 控制台使用 GBK 编码会抛出 UnicodeEncodeError
     try:
-        print(f"\n🚀 开始执行自动化测试（无 Browser 界面）: {script}")
+        print(f"\n>> 开始执行自动化测试（无 Browser 界面）: {script}")
     except UnicodeEncodeError:
         print(f"\n开始执行自动化测试（无 Browser 界面）: {script}")
     sys.stdout.flush()
@@ -354,7 +354,7 @@ def run_simulated_test(project_root):
                 return_code = se.code if isinstance(se.code, int) else 0
             except Exception as e:
                 try:
-                    print(f"❌ 执行测试时出错: {e}")
+                    print(f"[ERR] 执行测试时出错: {e}")
                 except UnicodeEncodeError:
                     print(f"执行测试时出错: {e}")
                 return -1
@@ -364,9 +364,9 @@ def run_simulated_test(project_root):
 
         try:
             if return_code == 0:
-                print("✅ 测试脚本执行完成（退出码 0）")
+                print("[OK] 测试脚本执行完成（退出码 0）")
             else:
-                print(f"⚠️ 测试脚本退出，返回码: {return_code}")
+                print(f"[WARN] 测试脚本退出，返回码: {return_code}")
         except UnicodeEncodeError:
             if return_code == 0:
                 print("测试脚本执行完成（退出码 0）")
@@ -375,13 +375,13 @@ def run_simulated_test(project_root):
         return return_code
     except KeyboardInterrupt:
         try:
-            print("\n⚠️ 检测到用户中断，已停止测试")
+            print("\n[WARN] 检测到用户中断，已停止测试")
         except UnicodeEncodeError:
             print("\n检测到用户中断，已停止测试")
         return INTERRUPTED_EXIT_CODE
     except Exception as e:
         try:
-            print(f"❌ 执行测试时出错: {e}")
+            print(f"[ERR] 执行测试时出错: {e}")
         except UnicodeEncodeError:
             print(f"执行测试时出错: {e}")
         return -1
@@ -424,7 +424,7 @@ def check_pnpm():
     except:
         pass
     
-    print("❌ 错误: 未找到 pnpm，请先安装 pnpm")
+    print("[ERR] 错误: 未找到 pnpm，请先安装 pnpm")
     print("   安装命令: npm install -g pnpm")
     return False
 
@@ -436,7 +436,7 @@ def cleanup():
 
 def signal_handler(signum, frame):
     """信号处理函数"""
-    print("\n\n⚠️ 收到中断信号，正在清理...")
+    print("\n\n[WARN] 收到中断信号，正在清理...")
     cleanup()
     sys.exit(0)
 
@@ -457,7 +457,7 @@ def main():
     clear_console()
     print_banner()
     
-    print(f"📂 项目目录: {project_root}")
+    print(f"[PROJECT] 项目目录: {project_root}")
     print()
     sys.stdout.flush()
     
@@ -471,13 +471,13 @@ def main():
     package_json = project_root / "package.json"
     
     if not tests_dir.exists():
-        print(f"❌ 错误: 找不到 tests 目录: {tests_dir}")
+        print(f"[ERR] 错误: 找不到 tests 目录: {tests_dir}")
         print("请确保在项目根目录运行此程序")
         input("\n按 Enter 键退出...")
         return
     
     if not package_json.exists():
-        print(f"❌ 错误: 找不到 package.json: {package_json}")
+        print(f"[ERR] 错误: 找不到 package.json: {package_json}")
         print("请确保在项目根目录运行此程序")
         input("\n按 Enter 键退出...")
         return
@@ -489,9 +489,9 @@ def main():
         # 直接进入菜单（启动后不自动跑测试）
         clear_console()
         print_banner()
-        print("📡 开发服务器运行中 (http://localhost:5173)")
+        print("[SERVER] 开发服务器运行中 (http://localhost:5173)")
         print()
-        print("🧭 已进入操作菜单")
+        print("[MENU] 已进入操作菜单")
         sys.stdout.flush()
         
         # 进入菜单循环
@@ -501,21 +501,21 @@ def main():
             try:
                 choice = input("\n请输入选项 (1/2/3/4/5): ").strip()
             except (EOFError, KeyboardInterrupt):
-                print("\n\n👋 程序已退出")
+                print("\n\n程序已退出")
                 break
             
             if choice == '1':
                 clear_console()
                 print_banner()
-                print("📡 开发服务器运行中 (http://localhost:5173)")
+                print("[SERVER] 开发服务器运行中 (http://localhost:5173)")
                 sys.stdout.flush()
                 result_code = run_playwright_test(project_root, 'broken')
                 if result_code == INTERRUPTED_EXIT_CODE:
                     clear_console()
                     print_banner()
-                    print("📡 开发服务器运行中 (http://localhost:5173)")
+                    print("[SERVER] 开发服务器运行中 (http://localhost:5173)")
                     print()
-                    print("🧭 测试异常退出！已返回操作菜单")
+                    print("[MENU] 测试异常退出！已返回操作菜单")
                     sys.stdout.flush()
                     continue
                 time.sleep(1)
@@ -524,15 +524,15 @@ def main():
             elif choice == '2':
                 clear_console()
                 print_banner()
-                print("📡 开发服务器运行中 (http://localhost:5173)")
+                print("[SERVER] 开发服务器运行中 (http://localhost:5173)")
                 sys.stdout.flush()
                 result_code = run_playwright_test(project_root, 'normal')
                 if result_code == INTERRUPTED_EXIT_CODE:
                     clear_console()
                     print_banner()
-                    print("📡 开发服务器运行中 (http://localhost:5173)")
+                    print("[SERVER] 开发服务器运行中 (http://localhost:5173)")
                     print()
-                    print("🧭 测试异常退出！已返回操作菜单")
+                    print("[WARN] 测试异常退出！已返回操作菜单")
                     sys.stdout.flush()
                     continue
                 time.sleep(1)
@@ -541,15 +541,15 @@ def main():
             elif choice == '3':
                 clear_console()
                 print_banner()
-                print("📡 开发服务器运行中 (http://localhost:5173)")
+                print("[SERVER] 开发服务器运行中 (http://localhost:5173)")
                 sys.stdout.flush()
                 result_code = run_simulated_test(project_root)
                 if result_code == INTERRUPTED_EXIT_CODE:
                     clear_console()
                     print_banner()
-                    print("📡 开发服务器运行中 (http://localhost:5173)")
+                    print("[SERVER] 开发服务器运行中 (http://localhost:5173)")
                     print()
-                    print("🧭 测试异常退出！已返回操作菜单")
+                    print("[WARN] 测试异常退出！已返回操作菜单")
                     sys.stdout.flush()
                     continue
                 time.sleep(1)
@@ -558,27 +558,27 @@ def main():
             elif choice == '4':
                 clear_console()
                 print_banner()
-                print("🔄 正在重启开发服务...")
+                print("[ACTION] 正在重启开发服务...")
                 sys.stdout.flush()
                 stop_dev_server()
                 start_dev_server(project_root)
                 clear_console()
                 print_banner()
-                print("📡 开发服务器运行中 (http://localhost:5173)")
-                print("🧭 已进入操作菜单")
+                print("[SERVER] 开发服务器运行中 (http://localhost:5173)")
+                print("[MENU] 已进入操作菜单")
                 sys.stdout.flush()
 
             elif choice == '5':
-                print("\n👋 感谢使用，再见！")
+                print("\n[BYE] 感谢使用，再见！")
                 break
             
             else:
-                print("\n⚠️ 无效选项，请输入 1、2、3 或 4")
+                print("\n[WARN] 无效选项，请输入 1、2、3、4 或 5")
     
     except KeyboardInterrupt:
-        print("\n\n👋 程序被中断")
+        print("\n\n[BYE] 程序被中断")
     except Exception as e:
-        print(f"\n❌ 发生错误: {e}")
+        print(f"\n[ERR] 发生错误: {e}")
     finally:
         # 确保退出时停止开发服务器
         cleanup()

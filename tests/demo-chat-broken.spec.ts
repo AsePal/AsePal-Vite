@@ -94,24 +94,28 @@ const I18N = {
 };
 
 test('Asepal AI前端自动化测试报告', async ({ page }) => {
+  const COLOR_GREEN = '\x1b[32m';
+  const COLOR_YELLOW = '\x1b[33m';
+  const COLOR_RED = '\x1b[31m';
+  const COLOR_RESET = '\x1b[0m';
   // ★ 注入输入保护层：显示醒目的测试警告标签
   // （配合 playwright.config.ts 中的 --kiosk 模式，窗口也无法被最小化/关闭）
-  await installInputGuard(page, { testName: '🔴 Broken 测试场景' });
+  await installInputGuard(page, { testName: '[BROKEN] Broken 测试场景' });
 
   // ★ 启动窗口状态监控器：检测并自动恢复最小化的窗口
   const windowMonitor = createWindowMonitor(page, 2000);
   windowMonitor.start();
 
   // 检查点记录
-  const checkpoints: { name: string; status: '✅ 通过' | '❌ 失败' | '⚠️ 警告' }[] = [];
+  const checkpoints: { name: string; status: '[OK] 通过' | '[FAIL] 失败' | '[WARN] 警告' }[] = [];
 
   // log 函数会自动记录检查点，并更新页面上的步骤显示
-  const log = (step: string, status: '✅ 通过' | '❌ 失败' | '⚠️ 警告' = '✅ 通过') => {
-    console.log(`\n✅ [STEP] ${step}`);
+  const log = (step: string, status: '[OK] 通过' | '[FAIL] 失败' | '[WARN] 警告' = '[OK] 通过') => {
+    console.log(`\n[STEP] ${step}`);
     // 更新页面上的步骤显示（fire-and-forget，不阻塞）
     updateTestStep(page, step).catch(() => {});
     // 只记录主要步骤（不以空格开头的、或者是关键节点）
-    if (!step.startsWith(' ') && !step.startsWith('✓')) {
+    if (!step.startsWith(' ')) {
       checkpoints.push({ name: step, status });
     }
   };
@@ -205,31 +209,44 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     console.log(`║  ${nameHeader}  ${statusHeader}${' '.repeat(headerTail)}║`);
     console.log(midBorder);
 
+    const colorizeStatus = (status: string) => {
+      if (status.includes('[OK]')) return `${COLOR_GREEN}${status}${COLOR_RESET}`;
+      if (status.includes('[WARN]')) return `${COLOR_YELLOW}${status}${COLOR_RESET}`;
+      if (status.includes('[FAIL]') || status.includes('[ERR]')) return `${COLOR_RED}${status}${COLOR_RESET}`;
+      return status;
+    };
+
     for (const cp of checkpoints) {
       const name = padDisplay(cp.name, NAME_COL_WIDTH);
       const left = '  ';
       const mid = '  ';
-      const status = cp.status;
+      const statusPlain = cp.status;
+      const statusColored = colorizeStatus(statusPlain);
       const used =
-        displayWidth(left) + displayWidth(name) + displayWidth(mid) + displayWidth(status);
+        displayWidth(left) + displayWidth(name) + displayWidth(mid) + displayWidth(statusPlain);
       const remaining = INNER_WIDTH - used;
       const tail = remaining > 0 ? ' '.repeat(remaining) : '';
-      console.log(`║${left}${name}${mid}${status}${tail}║`);
+      console.log(`║${left}${name}${mid}${statusColored}${tail}║`);
     }
 
-    const failedCount = checkpoints.filter((c) => c.status === '❌ 失败').length;
-    const warnCount = checkpoints.filter((c) => c.status === '⚠️ 警告').length;
+    const failedCount = checkpoints.filter((c) => c.status === '[FAIL] 失败').length;
+    const warnCount = checkpoints.filter((c) => c.status === '[WARN] 警告').length;
     const summary =
       failedCount > 0
-        ? `${failedCount} 项失败 ❌`
+        ? `${failedCount} 项失败 [FAIL]`
         : warnCount > 0
-          ? `${warnCount} 项警告 ⚠️`
-          : '所有检查点通过 ✅';
+          ? `${warnCount} 项警告 [WARN]`
+          : '所有检查点通过 [OK]';
+
+    const summaryColored = summary
+      .replace('[OK]', `${COLOR_GREEN}[OK]${COLOR_RESET}`)
+      .replace('[WARN]', `${COLOR_YELLOW}[WARN]${COLOR_RESET}`)
+      .replace('[FAIL]', `${COLOR_RED}[FAIL]${COLOR_RESET}`);
 
     console.log(midBorder);
     const summaryLabel = `  总结: ${summary}`;
     const summaryTail = Math.max(0, INNER_WIDTH - displayWidth(summaryLabel));
-    console.log(`║${summaryLabel}${' '.repeat(summaryTail)}║`);
+    console.log(`║  总结: ${summaryColored}${' '.repeat(summaryTail)}║`);
     const countLabel = `  共 ${checkpoints.length} 个检查点`;
     const countTail = Math.max(0, INNER_WIDTH - displayWidth(countLabel));
     console.log(`║${countLabel}${' '.repeat(countTail)}║`);
@@ -313,7 +330,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
         await sidebarBtn.click({ force: true });
         await slow(1000);
       } else {
-        throw new Error('❌ 无法打开侧栏：未找到侧栏开关按钮');
+        throw new Error('[ERR] 无法打开侧栏：未找到侧栏开关按钮');
       }
     }
     await slow(500);
@@ -345,7 +362,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
       .first();
 
     if ((await langToggle.count()) === 0) {
-      throw new Error('❌ 未找到语言切换按钮');
+      throw new Error('[ERR] 未找到语言切换按钮');
     }
 
     // 先打开语言菜单，检测当前选中的语言
@@ -390,7 +407,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
     const count = await targetButtons.count();
 
     if (count === 0) {
-      throw new Error(`❌ 未找到目标语言选项: ${targetLang}`);
+      throw new Error(`[ERR] 未找到目标语言选项: ${targetLang}`);
     }
 
     let switched = false;
@@ -418,7 +435,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
         await slow(1000);
         switched = true;
       } else {
-        throw new Error(`❌ 无法点击目标语言选项: ${targetLang}`);
+        throw new Error(`[ERR] 无法点击目标语言选项: ${targetLang}`);
       }
     }
 
@@ -555,7 +572,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
 
     log('✓ 多语言切换测试完成（已恢复原语言）');
   } catch (error) {
-    console.error('\n❌ 多语言切换测试失败:', error);
+    console.error('\n[ERR] 多语言切换测试失败:', error);
     throw new Error(
       `多语言切换测试失败: ${error instanceof Error ? error.message : String(error)}`,
     );
@@ -563,7 +580,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
 
   // 确保语言切换测试成功才继续
   if (!languageSwitchSuccess) {
-    throw new Error('❌ 多语言切换测试未通过，停止后续测试');
+    throw new Error('[ERR] 多语言切换测试未通过，停止后续测试');
   }
 
   await slow(500);
@@ -858,14 +875,14 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
       await logoutLoc.click({ force: true }).catch(() => {});
       await slow(800);
     } else {
-      console.error('\n❌ [ERROR] 退出登录按钮异常：未找到退出登录按钮，测试终止');
+      console.error('\n[ERR] [ERROR] 退出登录按钮异常：未找到退出登录按钮，测试终止');
       // 更新检查点状态为失败
       const idx = checkpoints.findIndex((c) => c.name.includes('7.2 点击退出登录'));
-      if (idx >= 0) checkpoints[idx].status = '❌ 失败';
+      if (idx >= 0) checkpoints[idx].status = '[FAIL] 失败';
 
       // 抛出错误终止测试并输出测试报告
       printTestReport();
-      throw new Error('❌ 退出登录按钮异常：未找到退出登录按钮，测试终止');
+      throw new Error('[ERR] 退出登录按钮异常：未找到退出登录按钮，测试终止');
     }
   } else {
     // 回退：尝试点击用户名条目（常见于侧栏或用户列表）
@@ -881,19 +898,19 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
         await logoutLoc.click({ force: true }).catch(() => {});
         await slow(600);
       } else {
-        console.error('\n❌ [ERROR] 退出登录按钮异常：未找到退出登录按钮，测试终止');
+        console.error('\n[ERR] [ERROR] 退出登录按钮异常：未找到退出登录按钮，测试终止');
         const idx = checkpoints.findIndex((c) => c.name.includes('7.2 点击退出登录'));
-        if (idx >= 0) checkpoints[idx].status = '❌ 失败';
+        if (idx >= 0) checkpoints[idx].status = '[FAIL] 失败';
 
         printTestReport();
-        throw new Error('❌ 退出登录按钮异常：未找到退出登录按钮，测试终止');
+        throw new Error('[ERR] 退出登录按钮异常：未找到退出登录按钮，测试终止');
       }
     } else {
-      console.error('\n❌ [ERROR] 退出登录按钮异常：未找到用户信息按钮，测试终止');
-      log('7.2 点击退出登录', '❌ 失败');
+      console.error('\n[ERR] [ERROR] 退出登录按钮异常：未找到用户信息按钮，测试终止');
+      log('7.2 点击退出登录', '[FAIL] 失败');
 
       printTestReport();
-      throw new Error('❌ 退出登录按钮异常：未找到用户信息按钮，测试终止');
+      throw new Error('[ERR] 退出登录按钮异常：未找到用户信息按钮，测试终止');
     }
   }
 
@@ -916,7 +933,7 @@ test('Asepal AI前端自动化测试报告', async ({ page }) => {
         console.warn('   未检测到登录入口，且用户名仍然可见（可能未退出）');
         // 更新检查点状态
         const idx = checkpoints.findIndex((c) => c.name.includes('验证已退出'));
-        if (idx >= 0) checkpoints[idx].status = '⚠️ 警告';
+        if (idx >= 0) checkpoints[idx].status = '[WARN] 警告';
       }
     });
 
