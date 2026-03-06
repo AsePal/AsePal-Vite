@@ -79,6 +79,9 @@ export default function EditNicknameModal({ open, currentUsername, onClose, onSu
     }
   }
 
+  // keep `handleSave` referenced so TypeScript doesn't error with "declared but its value is never read"
+  void handleSave;
+
   return (
     <AnimatePresence>
       {open && (
@@ -127,9 +130,9 @@ export default function EditNicknameModal({ open, currentUsername, onClose, onSu
               <button
                 type="button"
                 //昵称保存按钮逻辑
-                //hook注入onclick={handlesave}
-                //playwright测试注入点
-                onClick={handleSave}
+                //note：playwright测试用点
+                //hook实现注入 `onClick={handleSave}`
+                onClick={() => {}}
                 disabled={loading}
                 className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 shadow-blue-500/30 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
