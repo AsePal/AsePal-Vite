@@ -11,6 +11,7 @@ import sys
 import subprocess
 import time
 import webbrowser
+import runpy
 import signal
 import atexit
 from pathlib import Path
@@ -35,10 +36,8 @@ RESET = "\x1b[0m"
 
 def get_project_root():
     """获取项目根目录"""
-    # 如果是打包后的 EXE，使用 EXE 所在目录
     if getattr(sys, 'frozen', False):
         return Path(sys.executable).parent
-    # 否则使用脚本所在目录
     return Path(__file__).parent
 
 
@@ -345,18 +344,35 @@ def run_simulated_test(project_root):
     sys.stdout.flush()
 
     try:
-        result = subprocess.run([sys.executable, str(script)], cwd=project_root)
+        # 在打包为 EXE 时，sys.executable 指向 exe 本身，直接用它去执行 .py 会失败。
+        # 因此如果是 frozen 环境，直接在当前进程执行脚本（runpy.run_path），并捕获 SystemExit。
+        if getattr(sys, 'frozen', False):
+            try:
+                runpy.run_path(str(script), run_name='__main__')
+                return_code = 0
+            except SystemExit as se:
+                return_code = se.code if isinstance(se.code, int) else 0
+            except Exception as e:
+                try:
+                    print(f"❌ 执行测试时出错: {e}")
+                except UnicodeEncodeError:
+                    print(f"执行测试时出错: {e}")
+                return -1
+        else:
+            result = subprocess.run([sys.executable, str(script)], cwd=project_root)
+            return_code = result.returncode
+
         try:
-            if result.returncode == 0:
+            if return_code == 0:
                 print("✅ 测试脚本执行完成（退出码 0）")
             else:
-                print(f"⚠️ 测试脚本退出，返回码: {result.returncode}")
+                print(f"⚠️ 测试脚本退出，返回码: {return_code}")
         except UnicodeEncodeError:
-            if result.returncode == 0:
+            if return_code == 0:
                 print("测试脚本执行完成（退出码 0）")
             else:
-                print(f"测试脚本退出，返回码: {result.returncode}")
-        return result.returncode
+                print(f"测试脚本退出，返回码: {return_code}")
+        return return_code
     except KeyboardInterrupt:
         try:
             print("\n⚠️ 检测到用户中断，已停止测试")
