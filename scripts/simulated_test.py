@@ -62,10 +62,28 @@ def main():
         {"name": "打开站点", "desc": "访问 http://localhost:5173/", "wait": 1.2, "status": "[OK]"},
         {"name": "验证站点打开", "desc": "检查页面加载与网络空闲", "wait": 0.3, "status": "[OK]"},
         {"name": "切换语言", "desc": "打开侧栏并选择目标语言", "wait": 1.0, "status": "[OK]"},
-        {"name": "发送对话", "desc": "输入问题并提交", "wait": 0.6, "status": "[OK]"},
-        {"name": "获取回复", "desc": "流式输出回复", "wait": 0.0, "status": "[OK]"},
-        {"name": "修改头像", "desc": "上传并保存头像，检查回显", "wait": 1.4, "status": "[OK]"},
-        {"name": "提示登录", "desc": "触发登录弹窗/跳转登录页", "wait": 0.8, "status": "[OK]"},
+        {
+            "name": "学术问答",
+            "desc": "提问学术问题并验证",
+            "wait": 5.6,
+            "status": "[OK]",
+        },
+        {
+            "name": "论文翻译",
+            "desc": "提交论文翻译请求",
+            "wait": 5.6,
+            "status": "[OK]",
+        },
+        {"name": "获取回复", "desc": "流式输出回复", "wait": 2.0, "status": "[OK]"},
+        {
+            "name": "昵称更换",
+            "desc": "更换昵称并保存",
+            "wait": 2.8,
+            "status": "[OK]",
+        },
+        {"name": "修改昵称", "desc": "比对上传昵称，检查回显", "wait": 2.2, "status": "[OK]"},
+        {"name": "测试登录", "desc": "触发登录弹窗/跳转登录页", "wait": 1.5, "status": "[OK]"},
+        {"name": "测试登出", "desc": "触发登出弹窗/验证登出状态", "wait": 1.5, "status": "[OK]"},
     ]
 
     # 执行并输出每一步，步骤间保留空行
