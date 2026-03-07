@@ -39,13 +39,35 @@ export type SidebarHandle = {
   closeTransientMenus: () => boolean;
 };
 
-type Lang = 'zh-CN' | 'en-US' | 'vi-VN' | 'th-TH';
+type Lang =
+  | 'zh-CN'
+  | 'en-US'
+  | 'vi-VN'
+  | 'th-TH'
+  | 'my-MM'
+  | 'id-ID'
+  | 'km-KH'
+  | 'lo-LA'
+  | 'ms-BN'
+  | 'ms-MY'
+  | 'fil-PH'
+  | 'en-SG'
+  | 'pt-TL';
 
 const LANGS: { code: Lang; label: string }[] = [
   { code: 'zh-CN', label: '中文' },
   { code: 'en-US', label: 'English' },
   { code: 'vi-VN', label: 'Tiếng Việt' },
   { code: 'th-TH', label: 'ไทย' },
+  { code: 'my-MM', label: 'မြန်မာ' },
+  { code: 'id-ID', label: 'Bahasa Indonesia' },
+  { code: 'km-KH', label: 'ខ្មែរ' },
+  { code: 'lo-LA', label: 'ລາວ' },
+  { code: 'ms-BN', label: 'Bahasa Melayu (Brunei)' },
+  { code: 'ms-MY', label: 'Bahasa Melayu' },
+  { code: 'fil-PH', label: 'Filipino' },
+  { code: 'en-SG', label: 'English (Singapore)' },
+  { code: 'pt-TL', label: 'Português (Timor-Leste)' },
 ];
 
 const CONVERSATION_PAGE_SIZE = 8;
@@ -61,11 +83,27 @@ type HistoryActionMenuState = {
   openUpward: boolean;
 };
 
-function getLangKey(lng: string) {
-  if (lng.startsWith('zh')) return 'zh';
-  if (lng.startsWith('vi')) return 'vi';
-  if (lng.startsWith('th')) return 'th';
-  return 'en';
+const BASE_FALLBACK: Record<string, Lang> = {
+  en: 'en-US',
+  ms: 'ms-MY',
+  zh: 'zh-CN',
+  vi: 'vi-VN',
+  th: 'th-TH',
+  my: 'my-MM',
+  id: 'id-ID',
+  km: 'km-KH',
+  lo: 'lo-LA',
+  fil: 'fil-PH',
+  pt: 'pt-TL',
+};
+
+function resolveLang(lng: string) {
+  const exact = LANGS.find((lang) => lang.code === lng);
+  if (exact) return exact;
+
+  const base = lng.split('-')[0];
+  const fallback = BASE_FALLBACK[base];
+  return LANGS.find((lang) => lang.code === fallback) ?? LANGS[0];
 }
 
 const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
@@ -294,6 +332,7 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
   }, [historyActionMenu]);
 
   const current = i18n.resolvedLanguage ?? i18n.language ?? 'zh-CN';
+  const currentLang = resolveLang(current);
 
   const DEFAULT_AVATAR = '/userlogo.ico';
   const isAuthed = Boolean(user);
@@ -489,7 +528,7 @@ const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar(
                   <div className="flex-1 overflow-y-auto px-4 py-4">
                     <div className="space-y-1">
                       {LANGS.map((lang) => {
-                        const isActive = current.startsWith(getLangKey(lang.code));
+                        const isActive = currentLang?.code === lang.code;
                         return (
                           <button
                             key={lang.code}

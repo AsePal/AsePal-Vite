@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "subtitle": "An intelligent platform for ASEAN international students",
+    "line1": "For ASEAN international students in China",
+    "line2": "Providing policy guidance, campus adaptation, and emotional support",
+    "line3": "An intelligent companion you can rely on",
+    "start": "Get Started →"
+  },
+  "problem": {
+    "title": "You shouldn’t have to navigate a foreign country alone",
+    "desc1": "Language barriers, unfamiliar systems, and new campus environments can quietly increase stress.",
+    "desc2": "We aim to turn uncertainty into something understandable."
+  },
+  "features": {
+    "title": "What we can help you with",
+    "items": [
+      {
+        "title": "Smart policy explanations",
+        "desc": "Understand rules in a language you’re comfortable with"
+      },
+      {
+        "title": "Campus and local life guidance",
+        "desc": "Step by step, get familiar with your city"
+      },
+      {
+        "title": "Emotional support and companionship",
+        "desc": "When you feel anxious or alone"
+      },
+      {
+        "title": "Multilingual intelligent Q&A",
+        "desc": "Designed for ASEAN student backgrounds"
+      }
+    ]
+  },
+  "belief": {
+    "line1": "We believe technology is more than a tool,",
+    "line2": "it can be a source of safety in unfamiliar environments."
+  }
+}

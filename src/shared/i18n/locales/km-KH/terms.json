@@ -1,0 +1,85 @@
+{
+  "pageTitle": "Terms of Use | AsePal",
+  "backButton": "Back",
+  "backToTop": "Back to Top",
+  "header": {
+    "title": "AsePal Terms of Use",
+    "subtitle": "By using this service, you acknowledge that you have read, understood, and agreed to the following terms"
+  },
+  "lastUpdated": "Last updated: ",
+  "sections": {
+    "acceptance": {
+      "title": "1. Acceptance of Terms",
+      "content": "By accessing or using AsePal (hereinafter referred to as \"the Service\"), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the Service."
+    },
+    "description": {
+      "title": "2. Service Description",
+      "items": [
+        "Learning Assistant: Provides learning guidance and Q&A",
+        "Psychological Counseling: Provides mental health support (non-medical)",
+        "Campus Q&A: Answers questions about study and campus life",
+        "Campus Social Features (under development)"
+      ],
+      "highlight": "The advice provided by this service is for reference only and cannot replace professional medical, legal, or academic advice."
+    },
+    "account": {
+      "title": "3. User Account",
+      "items": [
+        "Provide true, accurate, and complete registration information",
+        "Keep your account and password secure",
+        "Be responsible for all activities under your account"
+      ]
+    },
+    "acceptableUse": {
+      "title": "4. Acceptable Use Policy",
+      "items": [
+        "Do not violate any laws or regulations",
+        "Do not spread illegal or harmful information",
+        "Do not attack or compromise system security",
+        "Do not infringe on the legitimate rights of others"
+      ]
+    },
+    "privacy": {
+      "title": "5. Privacy Policy",
+      "content": "We will process your personal information in accordance with our Privacy Policy.",
+      "link": "View Privacy Policy"
+    },
+    "intellectualProperty": {
+      "title": "6. Intellectual Property",
+      "content": "All content in this service is protected by law and may not be copied, distributed, or used for commercial purposes without permission."
+    },
+    "disclaimer": {
+      "title": "7. Disclaimer",
+      "items": [
+        "The service may experience interruptions or errors",
+        "Content accuracy or reliability is not guaranteed"
+      ],
+      "warning": "AI-generated content is for reference only. Users must exercise their own judgment and assume risks."
+    },
+    "liability": {
+      "title": "8. Limitation of Liability",
+      "content": "To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data loss, or other intangible losses."
+    },
+    "changes": {
+      "title": "9. Service Changes and Termination",
+      "content": "We reserve the right to modify, suspend, or terminate the Service (or any part thereof) at any time without prior notice. If we terminate the Service, we will make reasonable efforts to notify users in advance."
+    },
+    "updates": {
+      "title": "10. Terms Updates",
+      "content": "We may update these Terms of Use from time to time. We will notify you of any changes by posting the new version on this page and updating the \"Last Updated\" date. Continued use of the Service constitutes acceptance of the updated terms."
+    },
+    "contact": {
+      "title": "11. Contact Information",
+      "email": "Email: 1769797300@qq.com",
+      "phone": "Phone: +86 15107851770"
+    }
+  },
+  "agreement": {
+    "title": "I have read and understood the above Terms of Use",
+    "button": "Back to Login"
+  },
+  "footer": {
+    "copyright": "© 2026 AsePal | All Rights Reserved",
+    "font": "Font: MiSans"
+  }
+}

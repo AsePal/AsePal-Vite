@@ -1,0 +1,45 @@
+{
+  "header": {
+    "title": "Every step of growth is inseparable from your valuable suggestions and feedback.",
+    "description": "We value every piece of your feedback. Please describe the problems or suggestions you encounter in detail, and we will handle them and reply to you as soon as possible.",
+    "privacy": "Your login information will not be submitted"
+  },
+  "form": {
+    "title": "Submit Complaint / Feedback",
+    "type": {
+      "label": "Complaint Type",
+      "placeholder": "Please select complaint type",
+      "bug": "Feature Issue",
+      "content": "Content Problem",
+      "experience": "User Experience",
+      "other": "Other"
+    },
+    "content": {
+      "label": "Complaint Content",
+      "placeholder": "Please describe the problem you encountered in detail…"
+    },
+    "contact": {
+      "label": "Contact Information (Optional)",
+      "placeholder": "Email / QQ / WeChat"
+    },
+    "attachment": {
+      "label": "Upload Attachments",
+      "text": "Click to upload screenshots or files",
+      "hint": "Support images, PDF, Word, text files"
+    },
+    "submit": "Submit Complaint"
+  },
+  "topNav": {
+    "backHome": "Back to Home"
+  },
+  "message": {
+    "incomplete": "Please fill in complete complaint information",
+    "success": "Complaint submitted, thank you for your feedback 🙏",
+    "error": "Submission failed, please try again later",
+    "attachment": {
+      "limit": "You can upload up to 3 files.",
+      "invalid": "Unsupported file type: {{name}}",
+      "exceeded": "Too many files selected. Extra files were ignored."
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "welcome": {
+    "guest": {
+      "line1": "Hello there! I am AsePal 🌟",
+      "line2": "I can help you understand campus rules and regulations, provide information about life around the campus, and also serve as your friendly little mental wellness guide."
+    },
+    "authed": {
+      "line1": "Welcome back! How can I help you today? 🌟"
+    }
+  },
+
+  "input": {
+    "placeholder": "Ask me anything",
+    "placeholder_authed": "Press Enter to send, Shift + Enter for a new line",
+    "send": "Send message",
+    "newConversation": "New conversation",
+    "login_required": " Please sign in to use this feature"
+  },
+
+  "system": {
+    "thinking": "AsePal is thinking…",
+    "timeout": "⚠️ The response was interrupted (network issue or timeout). You can try again.",
+    "error": "⚠️ Something went wrong. Please try again later."
+  },
+
+  "topnav": {
+    "login": "Sign in / Register",
+    "logout": "Sign out"
+  },
+
+  "tooltips": {
+    "toggleSidebar": "Toggle sidebar",
+    "toggleNickname": "Toggle nickname",
+    "login": "Sign in / Register",
+    "openSidebar": "Open sidebar",
+    "closeSidebar": "Close sidebar",
+    "openUserInfo": "Open profile",
+    "goLogin": "Go to sign in",
+    "toggleLanguage": "Toggle language",
+    "closeLanguageMenu": "Close language menu",
+    "toggleTheme": "Toggle theme",
+    "openUserMenu": "Open user menu"
+  },
+
+  "sidebar": {
+    "title": "Navigation",
+    "ask": "Ask AsePal",
+    "chatroom": "Chat Room",
+    "comingSoon": "(Coming Soon)",
+    "about": "About AsePal",
+    "aboutUs": "About Us",
+    "feedback": "Feedback & Complaints",
+    "notLoggedIn": "You are not signed in yet",
+    "language": "Language",
+    "history": "Chat history",
+    "historyLoginTip": "Sign in to view your past chats",
+    "noHistory": "No conversations yet",
+    "loadMore": "Load more",
+    "loadMoreError": "Something went wrong. Please try again later.",
+    "loadedAll": "All loaded",
+    "loadingHistory": "Loading conversations…",
+    "conversationError": "Failed to load conversations",
+    "untitledConversation": "Untitled conversation",
+    "rename": "Rename",
+    "renameConfirm": "Confirm rename",
+    "renameCancel": "Cancel rename",
+    "renamePrompt": "Enter a new conversation title",
+    "renameEmptyError": "Title cannot be empty",
+    "renameError": "Failed to rename. Please try again.",
+    "delete": "Delete",
+    "deleteConfirmTitle": "Delete this conversation?",
+    "deleteConfirmDesc": "This action cannot be undone.",
+    "deleteConfirm": "Delete",
+    "deleteCancel": "Cancel",
+    "deleteError": "Failed to delete. Please try again."
+  },
+
+  "message": {
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "userMenu": {
+    "profile": "Profile",
+    "editAvatar": "Change avatar",
+    "editNickname": "Edit nickname",
+    "editPhone": "Edit phone number"
+  },
+  "avatarModal": {
+    "title": "Change Avatar",
+    "change": "Click to change",
+    "hint": "Only JPG / PNG / GIF / WebP images up to 5MB are supported",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "error": {
+      "type": "Only JPG / PNG / GIF / WebP images are supported",
+      "size": "Image size must not exceed 5MB",
+      "upload": "Failed to update avatar. Please try again later",
+      "OutputError": "Upload failed",
+      "UpdatetError": "Failed to update avatar. Please try again later"
+    }
+  },
+  "userInfoModal": {
+    "title": "Profile",
+    "close": "Close",
+    "guestName": "Not signed in",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "schoolNicknameLabel": "School nickname",
+    "unboundPhone": "Phone not linked",
+    "unboundEmail": "Email not linked",
+    "unboundSchoolNickname": "School nickname not set",
+    "editAvatar": "Change avatar",
+    "editNickname": "Edit nickname",
+    "editPhone": "Edit phone number",
+    "editEmail": "Edit email",
+    "logout": "Sign out"
+  },
+  "editNicknameModal": {
+    "label": "Nickname",
+    "placeholder": "Enter a new nickname",
+    "validate": {
+      "empty": "Nickname cannot be empty",
+      "length": "Nickname must be 2–30 characters",
+      "invalidChars": "Nickname contains unsupported characters"
+    },
+    "taken": "This nickname is already taken",
+    "updateFailed": "Update failed, please try again later",
+    "successTitle": "Nickname updated",
+    "successDesc": "Your new nickname is now active",
+    "emailTaken": "Email already taken",
+    "phoneTaken": "Phone already taken"
+  },
+
+  "successToast": {
+    "avatarUpdated": "Your new avatar is now active"
+  }
+}

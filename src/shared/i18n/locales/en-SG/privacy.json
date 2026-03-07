@@ -1,0 +1,76 @@
+{
+  "lastUpdated": "Last updated: ",
+  "lastUpdatedDate": "January 06, 2026",
+  "backToLogin": "Back to Login",
+  "afterReading": "After reading the privacy policy",
+  "backButton": "Back",
+  "backToTop": "Back to top",
+  "footer": {
+    "copyright": "© 2026 AsePal. All Rights Reserved | Campus Intelligent Assistant",
+    "font": "Font: MiSans"
+  },
+  "sections": {
+    "intro": {
+      "title": "Introduction",
+      "paragraphs": [
+        "Welcome to AsePal (hereinafter referred to as \"the App\"). We deeply understand the importance of your personal information and are committed to protecting its security. This privacy policy explains how we collect, use, store, share, and protect your personal information, as well as how you can exercise your personal information rights.",
+        "Please read and understand this privacy policy in full before using the App. If you do not agree with the content of this privacy policy, please stop using the App immediately. Once you start using the App, it means you have fully understood and agreed to all terms of this privacy policy."
+      ]
+    },
+    "collect": {
+      "title": "Information We Collect",
+      "paragraphs": ["To provide you with services, we may collect the following information:"],
+      "list": [
+        "Account Information: When you log in, we collect your login credentials, nickname, avatar, and other necessary information.",
+        "Personal Profile: Personal information you actively provide when using the App, such as avatar, gender, etc.",
+        "Device Information: Including device model, operating system version, unique device identifiers, etc.",
+        "Content Information: Text, images, voice, and other content generated during your use of the App.",
+        "Location Information: With your authorization, we may collect your location information to provide related services.",
+        "Log Information: Operation logs, service logs, etc., when you use the App.",
+        "With your authorization, we may obtain your related information from user authentication, partner service providers, and other third parties to provide better services."
+      ],
+      "highlight": "We only collect your personal information within a legal, legitimate, and necessary scope."
+    }
+  },
+  "usageTable": {
+    "title": "How We Use Your Information",
+    "headers": ["Purpose", "Description"],
+    "rows": [
+      ["Provide Basic Services", "Account creation, core features"],
+      ["Personalized Services", "Recommendations and experience optimization"],
+      ["Security Assurance", "Risk control and protection"],
+      ["Customer Support", "Handle inquiries and complaints"]
+    ]
+  },
+  "rightsTable": {
+    "title": "Your Personal Information Rights",
+    "headers": ["Right", "Description"],
+    "rows": [
+      ["Access Right", "You have the right to access your personal information we hold"],
+      [
+        "Correction Right",
+        "You have the right to request correction of inaccurate or incomplete personal information"
+      ],
+      [
+        "Deletion Right",
+        "Under certain circumstances, you have the right to request deletion of your personal information"
+      ],
+      [
+        "Withdrawal of Consent",
+        "You have the right to withdraw your consent to personal information processing at any time"
+      ],
+      [
+        "Restriction Right",
+        "Under certain circumstances, you have the right to restrict our processing of your personal information"
+      ],
+      [
+        "Data Portability",
+        "You have the right to obtain a copy of your personal information and transfer it to other service providers"
+      ],
+      [
+        "Complaint Right",
+        "If you believe our personal information processing violates laws and regulations, you have the right to complain to regulatory authorities"
+      ]
+    ]
+  }
+}

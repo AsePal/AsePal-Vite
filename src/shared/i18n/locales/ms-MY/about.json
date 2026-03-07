@@ -1,0 +1,73 @@
+{
+  "hero": {
+    "title": "Wisdom Guides, Care Awaits",
+    "description": "AI intelligence is the vessel guiding you through the sea of information, and our care is the harbor forever awaiting you"
+  },
+  "aboutUs": {
+    "title": "About Us",
+    "intro": "We are a team of students from computing backgrounds who came together through shared passion for artificial intelligence and campus services. We are dedicated to developing intelligent applications that solve real campus challenges.",
+    "mission": "Our Mission",
+    "missionText1": "Through technological innovation, we provide teachers and students with smarter, more convenient campus services. We believe technology should serve people, and campus is the ideal place for technology application.",
+    "missionText2": "Our intelligent assistant project aims to integrate campus resources and provide one-stop services including policy queries, psychological guidance, natural language communication, and campus recommendations, making campus life more efficient and organized."
+  },
+  "team": {
+    "title": "Team Members",
+    "subtitle": "Each member of our team brings unique skills and expertise, working together to drive project development and implementation",
+    "members": [
+      {
+        "name": "Xiaolei",
+        "role": "Team Lead / Backend Developer",
+        "desc": "Responsible for overall project planning and backend framework architecture."
+      },
+      {
+        "name": "Xiaogao",
+        "role": "Frontend Developer / Core Logic Design",
+        "desc": "Responsible for core interaction design and frontend development."
+      },
+      {
+        "name": "Xiaozhu",
+        "role": "Data Analysis and Collection",
+        "desc": "Responsible for project data collection and analysis."
+      },
+      {
+        "name": "Xiaoqing",
+        "role": "UI Designer",
+        "desc": "Responsible for overall visual and UI design."
+      }
+    ]
+  },
+  "project": {
+    "title": "Project Introduction",
+    "subtitle": "The Campus Intelligent Assistant is a comprehensive web application designed to enhance the intelligence level of campus life",
+    "features": "Campus Intelligent Assistant Features",
+    "featuresDesc": "Our application integrates various aspects of campus learning, life, and social needs, providing comprehensive services in an intelligent manner.",
+    "coreFeatures": "Core Features",
+    "coreFeaturesList": [
+      "Smart policy interpretation online",
+      "Personalized campus and surrounding area recommendations",
+      "24/7 online psychological counseling model",
+      "Multilingual intelligent Q&A assistant",
+      "Multi-platform web interaction experience"
+    ],
+    "techHighlights": "Technical Highlights",
+    "techHighlightsList": [
+      "Recommendation algorithm based on deep learning",
+      "Natural language processing Q&A system",
+      "Microservices architecture backend system",
+      "Responsive cross-platform frontend design",
+      "Intelligent assistant tailored for ASEAN students"
+    ],
+    "progress": "Project Progress",
+    "progressText": "Version 1 has completed multilingual support and core model training, and is now in operation. Version 2 is under development for web chat rooms, WeChat mini programs, and mobile apps, with internal testing expected in the second half of the year."
+  },
+  "footer": {
+    "copyright": "© 2026 Campus Intelligent Assistant Team | All Rights Reserved",
+    "disclaimer": "This website is for team introduction purposes only, non-commercial use",
+    "font": "Font: Misans"
+  },
+  "header": {
+    "exit": "Exit",
+    "back": "Back",
+    "backToTop": "Back to top"
+  }
+}
