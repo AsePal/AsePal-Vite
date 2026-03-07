@@ -72,13 +72,18 @@ export default function Login() {
     if (!agreed) return setError(t('error.needAgree'));
     if (!account || !password) return setError(t('error.empty'));
     if (/\s/.test(account) || /\s/.test(password)) return setError(t('error.space'));
-
+    //  后端请求体通过： body: { identifier: account, password }请求令牌
     setLoading(true);
     setError('');
 
     try {
       const res = await apiRequest(API.auth.login, {
-        method: 'POST',
+        //接口请求方法;
+        //使用 P 方法请求login接口
+        method: 'GET',
+        //请求体内容：
+        //identifier 后端约定的字段名，账号载体，可以是用户名、邮箱或手机号
+        //password :密文载体，后端进行验证
         body: { identifier: account, password },
       });
 
