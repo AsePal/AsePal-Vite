@@ -8,3 +8,4 @@ export { default as UserInfoModal } from './modals/UserInfoModal';
 
 // Menus
 export { default as UserAvatarMenu } from './menus/UserAvatarMenu';
+export { default as Footer } from './Footer';

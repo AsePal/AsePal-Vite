@@ -13,6 +13,7 @@ import {
   SuccessToastModal,
   UserInfoModal,
   SessionExpiredModal,
+  Footer,
 } from '../../shared/components';
 
 import API, { apiRequest } from '../../shared/api/config';
@@ -332,6 +333,7 @@ export default function MainLayout() {
           navigate('/');
         }}
       />
+      <Footer />
     </div>
   );
 }

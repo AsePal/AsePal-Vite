@@ -12,6 +12,14 @@ export default function Footer() {
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-8 text-center text-gray-700 dark:text-gray-300">
         <p className="text-sm opacity-90">{t('footer.copyright')}</p>
         <p className="text-sm opacity-90">{t('footer.font')}</p>
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs opacity-70 hover:opacity-100 transition-opacity duration-200 mt-1 inline-block"
+        >
+          桂ICP备2026008588号-1
+        </a>
       </div>
     </footer>
   );
